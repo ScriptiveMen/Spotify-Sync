@@ -1,0 +1,9 @@
+import app from "./src/app.js";
+import { connect } from "./src/broker/rabbit.js";
+import startListeners from "./src/broker/listener.js";
+
+connect().then(startListeners);
+
+app.listen(3001, () => {
+    console.log("Notification server is running on port 3001");
+});
