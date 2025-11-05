@@ -3,7 +3,7 @@ import MainRotues from "./routes/MainRotues";
 
 const App = () => {
     return (
-        <div className="text-white">
+        <div className="text-white font-[spoty] ">
             <MainRotues />
         </div>
     );

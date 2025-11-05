@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@font-face {
+    font-family: "spoty";
+    src: url("./font/StackSansNotch-VariableFont_wght.ttf");
+}
+
 body {
     background-color: #111;
 }
