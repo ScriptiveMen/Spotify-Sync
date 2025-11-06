@@ -24,8 +24,8 @@ const Navbar = () => {
     const navLinks = [
         { name: "Home", path: "/", icon: House },
         {
-            name: "Music",
-            path: `/music-player/${getRandomMusicId()}`,
+            name: "Random Picks",
+            path: `/track/${getRandomMusicId()}`,
             icon: Music2,
             isRandom: true,
         },
@@ -58,7 +58,7 @@ const Navbar = () => {
     const handleMusicClick = (e, link) => {
         if (link.isRandom) {
             e.preventDefault();
-            navigate(`/music-player/${getRandomMusicId()}`);
+            navigate(`/track/${getRandomMusicId()}`);
             setIsMenuOpen(false);
         }
     };

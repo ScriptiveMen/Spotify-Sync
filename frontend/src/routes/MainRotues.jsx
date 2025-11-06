@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import Login from "../pages/common/Login";
-import Register from "../pages/common/Register";
+import SignIn from "../pages/common/SignIn";
+import SignUp from "../pages/common/SignUp";
 import Home from "../pages/common/Home";
 import MusicPlayer from "../pages/common/MusicPlayer";
 
@@ -9,9 +9,9 @@ const MainRotues = () => {
     return (
         <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/signin" element={<Login />} />
-            <Route path="/signup" element={<Register />} />
-            <Route path="/music-player/:id" element={<MusicPlayer />} />
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/track/:id" element={<MusicPlayer />} />
         </Routes>
     );
 };

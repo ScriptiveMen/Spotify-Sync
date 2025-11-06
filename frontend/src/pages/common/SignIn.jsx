@@ -2,7 +2,7 @@ import { Podcast } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const SignIn = () => {
     const {
         register,
         handleSubmit,
@@ -19,7 +19,7 @@ const Login = () => {
 
     return (
         <div className="h-screen flex flex-col items-center justify-center px-5">
-            <Podcast size={40} />
+            <Podcast size={40} className="text-[#20D760]" />
 
             <h1 className="py-2 text-5xl lg:text-6xl font-bold">
                 Welcome back
@@ -103,4 +103,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default SignIn;

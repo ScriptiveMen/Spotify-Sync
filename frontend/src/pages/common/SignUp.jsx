@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { Podcast } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const Register = () => {
+const SignUp = () => {
     const {
         register,
         handleSubmit,
@@ -28,7 +28,7 @@ const Register = () => {
     const navigate = useNavigate();
     return (
         <div className="h-screen flex flex-col items-center justify-center px-5">
-            <Podcast size={40} />
+            <Podcast size={40} className="text-[#20D760]" />
 
             <h1 className="py-2 text-5xl text-center lg:text-6xl font-bold">
                 Sign up to <br /> start listening
@@ -164,4 +164,4 @@ const Register = () => {
     );
 };
 
-export default Register;
+export default SignUp;

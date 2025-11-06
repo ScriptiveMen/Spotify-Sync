@@ -200,9 +200,9 @@ const Home = () => {
                 {/* Musics Section */}
                 <div className="mb-10">
                     <div className="flex items-center justify-between mb-6">
-                        <h2 className="flex items-center gap-3 text-2xl md:text-3xl font-bold">
-                            <div className="p-2 bg-linear-to-br from-blue-500 to-cyan-500 rounded-lg">
-                                <Music size={24} />
+                        <h2 className="flex items-center gap-3 text-xl sm:text-2xl md:text-3xl font-bold">
+                            <div className="p-1.5 sm:p-2 bg-linear-to-br from-blue-500 to-cyan-500 rounded-lg">
+                                <Music className="w-5 h-5 md:w-6 md:h-6" />
                             </div>
                             <span>Trending Musics</span>
                         </h2>
@@ -211,7 +211,7 @@ const Home = () => {
                                 onClick={() =>
                                     setIsShowAllMusics(!isShowAllMusics)
                                 }
-                                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-all duration-300 text-sm font-medium"
+                                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-all duration-300 text-xs sm:text-sm  font-medium"
                             >
                                 <span>
                                     {isShowAllMusics ? "Show less" : "Show all"}
@@ -228,7 +228,7 @@ const Home = () => {
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
                         {displayedMusics.map((music, idx) => (
                             <Link
-                                to={`/music-player/${music._id}`}
+                                to={`/track/${music._id}`}
                                 key={idx}
                                 className="group"
                                 onMouseEnter={() => setHoveredMusic(idx)}
@@ -270,9 +270,9 @@ const Home = () => {
                 {/* Playlists Section */}
                 <div className="pb-10">
                     <div className="flex items-center justify-between mb-6">
-                        <h2 className="flex items-center gap-3 text-2xl md:text-3xl font-bold">
-                            <div className="p-2 bg-linear-to-br from-purple-500 to-pink-500 rounded-lg">
-                                <ListMusic size={24} />
+                        <h2 className="flex items-center gap-3 text-xl sm:text-2xl md:text-3xl font-bold">
+                            <div className="p-1.5 sm:p-2 bg-linear-to-br from-purple-500 to-pink-500 rounded-lg">
+                                <ListMusic className="w-5 h-5 md:w-6 md:h-6" />
                             </div>
                             <span>Trending Playlists</span>
                         </h2>
@@ -281,7 +281,7 @@ const Home = () => {
                                 onClick={() =>
                                     setIsShowAllPlaylists(!isShowAllPlaylists)
                                 }
-                                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-all duration-300 text-sm font-medium"
+                                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-all duration-300 text-xs sm:text-sm font-medium"
                             >
                                 <span>
                                     {isShowAllPlaylists
