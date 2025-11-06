@@ -186,10 +186,10 @@ const Home = () => {
         <div className="min-h-screen w-full bg-linear-to-b from-gray-900 via-black to-black">
             <Navbar />
 
-            <div className="w-full h-screen px-4 md:px-8 lg:px-12 pt-24">
+            <div className="w-full min-h-screen px-4 md:px-8 lg:px-12 pt-24">
                 {/* Hero Section */}
                 <div className="mb-12">
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-3 bg-linear-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-3 text-[#20D760]">
                         Welcome Back
                     </h1>
                     <p className="text-gray-400 text-lg">
@@ -268,7 +268,7 @@ const Home = () => {
                 </div>
 
                 {/* Playlists Section */}
-                <div className="mb-16">
+                <div className="pb-10">
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="flex items-center gap-3 text-2xl md:text-3xl font-bold">
                             <div className="p-2 bg-linear-to-br from-purple-500 to-pink-500 rounded-lg">
