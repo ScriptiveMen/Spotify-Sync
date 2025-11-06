@@ -66,22 +66,19 @@ const Navbar = () => {
     return (
         <>
             <nav
-                className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+                className={`fixed  top-0 left-0 right-0 z-50 transition-all duration-300 ${
                     isVisible ? "translate-y-0" : "-translate-y-full"
                 }`}
             >
                 {/* Main Navbar */}
                 <div className="w-full bg-black/95 backdrop-blur-md">
                     <div className="mx-auto px-4 md:px-6 lg:px-8">
-                        <div className="flex items-center justify-between h-16">
+                        <div className="flex items-center justify-between h-13 md:h-16">
                             {/* Left section */}
                             <div className="flex w-full items-center justify-start gap-8">
                                 {/* Logo Section */}
                                 <div className="flex items-center gap-3 cursor-pointer">
-                                    <Podcast
-                                        size={32}
-                                        className="text-[#20D760]"
-                                    />
+                                    <Podcast className="text-white sm:text-[#20D760] w-6 h-6 md:w-7 md:h-7 " />
                                     <span className="text-xl whitespace-nowrap md:text-2xl font-bold text-white hidden sm:block">
                                         Spotify-Sync
                                     </span>
@@ -97,7 +94,7 @@ const Navbar = () => {
                                                 handleMusicClick(e, link)
                                             }
                                             className={({ isActive }) =>
-                                                `flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-200 ${
+                                                `flex items-center gap-2 px-4 whitespace-nowrap py-2 rounded-full transition-all duration-200 ${
                                                     isActive && !link.isRandom
                                                         ? "bg-[#282828] text-white"
                                                         : "text-[#b3b3b3] hover:text-white"
@@ -156,9 +153,9 @@ const Navbar = () => {
                                 className="md:hidden p-2 rounded-lg hover:bg-[#282828] transition-all"
                             >
                                 {isMenuOpen ? (
-                                    <X size={28} className="text-white" />
+                                    <X className="text-white w-6 h-6 md:w-7 md:h-7" />
                                 ) : (
-                                    <Menu size={28} className="text-white" />
+                                    <Menu className="text-white w-6 h-6 md:w-7 md:h-7" />
                                 )}
                             </button>
                         </div>

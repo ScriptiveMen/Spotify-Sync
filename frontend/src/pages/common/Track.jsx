@@ -13,7 +13,7 @@ import {
     ChevronDown,
 } from "lucide-react";
 
-const MusicPlayer = () => {
+const Track = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const audioRef = useRef(null);
@@ -226,7 +226,9 @@ const MusicPlayer = () => {
                 >
                     <ChevronDown size={28} />
                 </button>
-                <h2 className="text-sm text-gray-400">Playing Now</h2>
+                <h2 className="text-sm text-gray-400 invert-100">
+                    Playing Now
+                </h2>
                 <div className="w-10"></div>
             </div>
 
@@ -453,4 +455,4 @@ const MusicPlayer = () => {
     );
 };
 
-export default MusicPlayer;
+export default Track;

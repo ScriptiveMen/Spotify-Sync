@@ -234,7 +234,7 @@ const Home = () => {
                                 onMouseEnter={() => setHoveredMusic(idx)}
                                 onMouseLeave={() => setHoveredMusic(null)}
                             >
-                                <div className="relative bg-white/5 backdrop-blur-sm rounded-xl p-4 transition-all duration-300 hover:bg-white/10 hover:scale-105">
+                                <div className="relative bg-white/5 backdrop-blur-sm rounded-xl p-2 sm:p-4 transition-all duration-300 hover:bg-white/10 hover:scale-105">
                                     <div className="relative w-full aspect-square overflow-hidden rounded-lg mb-4 shadow-2xl">
                                         <img
                                             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -308,7 +308,7 @@ const Home = () => {
                                 onMouseEnter={() => setHoveredPlaylist(idx)}
                                 onMouseLeave={() => setHoveredPlaylist(null)}
                             >
-                                <div className="relative bg-white/5 backdrop-blur-sm rounded-xl p-4 transition-all duration-300 hover:bg-white/10 hover:scale-105">
+                                <div className="relative bg-white/5 backdrop-blur-sm rounded-xl p-2 sm:p-4 transition-all duration-300 hover:bg-white/10 hover:scale-105">
                                     <div className="relative w-full aspect-square overflow-hidden rounded-lg mb-4 shadow-2xl">
                                         <img
                                             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
