@@ -11,7 +11,7 @@ const MainRotues = () => {
             <Route path="/" element={<Home />} />
             <Route path="/signin" element={<Login />} />
             <Route path="/signup" element={<Register />} />
-            <Route path="/music-player" element={<MusicPlayer />} />
+            <Route path="/music-player/:id" element={<MusicPlayer />} />
         </Routes>
     );
 };
