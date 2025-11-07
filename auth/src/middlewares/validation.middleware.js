@@ -20,3 +20,9 @@ export const registerUserValidationRules = [
 
     validation,
 ];
+
+export const loginUserValidationRules = [
+    body("email").isEmail().withMessage("Invalid email address"),
+    body("password").notEmpty().withMessage("Password is required"),
+    validation,
+];

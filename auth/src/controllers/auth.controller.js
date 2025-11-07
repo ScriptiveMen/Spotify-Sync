@@ -123,3 +123,40 @@ export async function googleAuthCallback(req, res) {
         },
     });
 }
+
+export async function loginUser(req, res) {
+    const { email, password } = req.body;
+
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+        return res.status(403).json({ message: "Invalid email or password" });
+    }
+
+    const isValidPassword = await bcrypt.compare(password, user.password);
+
+    if (!isValidPassword) {
+        return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    const token = jwt.sign(
+        {
+            id: user._id,
+            role: user.role,
+        },
+        config.JWT_SECRET,
+        { expiresIn: "2d" }
+    );
+
+    res.cookie("token", token);
+
+    res.status(200).json({
+        message: "User logged in sucessfully",
+        user: {
+            id: user._id,
+            email: user.email,
+            fullName: user.fullName,
+            role: user.role,
+        },
+    });
+}

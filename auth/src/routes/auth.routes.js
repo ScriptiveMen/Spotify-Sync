@@ -11,6 +11,12 @@ router.post(
     authController.registerUser
 );
 
+router.post(
+    "/login",
+    validationRules.loginUserValidationRules,
+    authController.loginUser
+);
+
 // Route to initiate Google OAuth flow
 router.get(
     "/google",
