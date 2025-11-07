@@ -75,15 +75,7 @@ export async function googleAuthCallback(req, res) {
 
         res.cookie("token", token);
 
-        return res.status(200).json({
-            message: "User loggedIn Sucessfully",
-            user: {
-                id: isAlreadyUserExists._id,
-                email: isAlreadyUserExists.email,
-                fullName: isAlreadyUserExists.fullName,
-                role: isAlreadyUserExists.role,
-            },
-        });
+        return res.redirect("http://localhost:5173");
     }
 
     const newUser = await userModel.create({
@@ -113,15 +105,7 @@ export async function googleAuthCallback(req, res) {
 
     res.cookie("token", token);
 
-    res.status(201).json({
-        message: "User registered sucessfully",
-        user: {
-            id: newUser._id,
-            email: newUser.email,
-            fullName: newUser.fullName,
-            role: newUser.role,
-        },
-    });
+    res.redirect("http://localhost:5173");
 }
 
 export async function loginUser(req, res) {

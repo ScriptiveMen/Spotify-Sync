@@ -1,6 +1,7 @@
 import { Podcast } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import axios from "../../utils/axios.js";
 
 const SignIn = () => {
     const {
@@ -10,12 +11,20 @@ const SignIn = () => {
         reset,
     } = useForm();
 
-    const submitHandler = (data) => {
-        console.log(data);
-        reset();
-    };
-
     const navigate = useNavigate();
+
+    const submitHandler = async (data) => {
+        try {
+            await axios.post("/api/auth/login", data, {
+                withCredentials: true,
+            });
+            navigate("/");
+        } catch (err) {
+            console.log("Error signin...", err);
+        } finally {
+            reset();
+        }
+    };
 
     return (
         <div className="h-screen flex flex-col items-center justify-center px-5">
@@ -84,7 +93,13 @@ const SignIn = () => {
 
                 <h3 className="my-4 text-lg">or</h3>
 
-                <div className="flex items-center justify-center gap-5 border rounded-full w-full py-3 cursor-pointer hover:bg-gray-50 hover:text-black transition mb-10">
+                <div
+                    onClick={() =>
+                        (window.location.href =
+                            "http://localhost:3000/api/auth/google")
+                    }
+                    className="flex items-center justify-center gap-5 border rounded-full w-full py-3 cursor-pointer hover:bg-gray-50 hover:text-black transition mb-10"
+                >
                     <img className="h-6" src="/google.svg" alt="Google" />
                     <p className="font-semibold text-base">
                         Continue with Google

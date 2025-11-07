@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Podcast, User, Mic } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import axios from "../../utils/axios.js";
 
 const SignUp = () => {
     const [accountType, setAccountType] = useState("user");
@@ -11,8 +12,9 @@ const SignUp = () => {
         formState: { errors },
         reset,
     } = useForm();
+    const navigate = useNavigate();
 
-    const submitHandler = (data) => {
+    const submitHandler = async (data) => {
         const formattedData = {
             email: data.email,
             fullName: {
@@ -23,11 +25,12 @@ const SignUp = () => {
             role: accountType,
         };
 
-        console.log(formattedData);
+        await axios.post("/api/auth/register", formattedData, {
+            withCredentials: true,
+        });
         reset();
+        navigate("/");
     };
-
-    const navigate = useNavigate();
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center px-5 py-10">
@@ -223,7 +226,13 @@ const SignUp = () => {
 
                 <h3 className="my-4 text-base sm:text-lg">or</h3>
 
-                <div className="flex items-center justify-center gap-3 sm:gap-5 border rounded-full w-full py-3 cursor-pointer hover:bg-gray-50 hover:text-black transition mb-6 sm:mb-10">
+                <div
+                    onClick={() => {
+                        window.location.href =
+                            "http://localhost:3000/api/auth/google";
+                    }}
+                    className="flex items-center justify-center gap-3 sm:gap-5 border rounded-full w-full py-3 cursor-pointer hover:bg-gray-50 hover:text-black transition mb-6 sm:mb-10"
+                >
                     <img
                         className="h-5 sm:h-6"
                         src="/google.svg"
