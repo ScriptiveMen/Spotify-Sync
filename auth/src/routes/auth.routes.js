@@ -2,6 +2,7 @@ import express from "express";
 import * as authController from "../controllers/auth.controller.js";
 import * as validationRules from "../middlewares/validation.middleware.js";
 import passport from "passport";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
@@ -16,6 +17,8 @@ router.post(
     validationRules.loginUserValidationRules,
     authController.loginUser
 );
+
+router.get("/me", authMiddleware, authController.getUser);
 
 // Route to initiate Google OAuth flow
 router.get(

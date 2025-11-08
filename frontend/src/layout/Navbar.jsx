@@ -9,12 +9,15 @@ import {
     X,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
     const lastScrollY = useRef(0);
     const navigate = useNavigate();
+
+    const { user } = useSelector((state) => state.user);
 
     // Random music ID generator (you'll replace this with real IDs later)
     const getRandomMusicId = () => {
@@ -140,8 +143,8 @@ const Navbar = () => {
                                             size={24}
                                             className="text-white"
                                         />
-                                        <p className="font-semibold text-white text-sm">
-                                            Test User
+                                        <p className="font-semibold capitalize text-white text-sm">
+                                            {user.fullName.firstName}
                                         </p>
                                     </div>
                                 </div>

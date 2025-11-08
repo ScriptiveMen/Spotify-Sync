@@ -144,3 +144,18 @@ export async function loginUser(req, res) {
         },
     });
 }
+
+export async function getUser(req, res) {
+    if (!req.user) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
+    return res.status(200).json({
+        message: "User fetched sucessfully",
+        user: {
+            id: req.user.id,
+            email: req.user.email,
+            fullName: req.user.fullName,
+            role: req.user.fullName,
+        },
+    });
+}

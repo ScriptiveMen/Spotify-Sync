@@ -5,6 +5,7 @@ import SignUp from "../pages/common/SignUp";
 import Home from "../pages/common/Home";
 import Track from "../pages/common/Track";
 import ProtectedRoutes from "../components/common/ProtectedRoutes";
+import PublicRoutes from "../components/common/PublicRoutes";
 
 const MainRotues = () => {
     return (
@@ -17,8 +18,22 @@ const MainRotues = () => {
                     </ProtectedRoutes>
                 }
             />
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
+            <Route
+                path="/signin"
+                element={
+                    <PublicRoutes>
+                        <SignIn />
+                    </PublicRoutes>
+                }
+            />
+            <Route
+                path="/signup"
+                element={
+                    <PublicRoutes>
+                        <SignUp />
+                    </PublicRoutes>
+                }
+            />
             <Route
                 path="/track/:id"
                 element={

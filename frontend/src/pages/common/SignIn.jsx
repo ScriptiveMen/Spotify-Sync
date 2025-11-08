@@ -2,6 +2,8 @@ import { Podcast } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import axios from "../../utils/axios.js";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../store/slices/userSlice.jsx";
 
 const SignIn = () => {
     const {
@@ -12,13 +14,15 @@ const SignIn = () => {
     } = useForm();
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const submitHandler = async (data) => {
         try {
-            await axios.post("/api/auth/login", data, {
+            const res = await axios.post("/api/auth/login", data, {
                 withCredentials: true,
             });
             navigate("/");
+            dispatch(setUser(res.data.user));
         } catch (err) {
             console.log("Error signin...", err);
         } finally {
