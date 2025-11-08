@@ -15,6 +15,7 @@ const App = () => {
                 dispatch(setUser(res.data.user));
             } catch (error) {
                 console.log("Error Fetching user:", error);
+                dispatch(setUser(null));
             }
         }
 
