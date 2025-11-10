@@ -8,6 +8,7 @@ export async function registerUser(req, res) {
     const {
         email,
         fullName: { firstName, lastName },
+        role = "user",
         password,
     } = req.body;
 
@@ -26,12 +27,14 @@ export async function registerUser(req, res) {
             firstName,
             lastName,
         },
+        role,
     });
 
     const token = jwt.sign(
         {
             id: user._id,
             role: user.role,
+            fullName: user.fullName,
         },
         config.JWT_SECRET,
         { expiresIn: "2d" }
@@ -68,6 +71,7 @@ export async function googleAuthCallback(req, res) {
             {
                 id: isAlreadyUserExists._id,
                 role: isAlreadyUserExists.role,
+                fullName: isAlreadyUserExists.fullName,
             },
             config.JWT_SECRET,
             { expiresIn: "2d" }
@@ -98,6 +102,7 @@ export async function googleAuthCallback(req, res) {
         {
             id: newUser._id,
             role: newUser.role,
+            fullName: newUser.fullName,
         },
         config.JWT_SECRET,
         { expiresIn: "2d" }
@@ -127,6 +132,7 @@ export async function loginUser(req, res) {
         {
             id: user._id,
             role: user.role,
+            fullName: user.fullName,
         },
         config.JWT_SECRET,
         { expiresIn: "2d" }
