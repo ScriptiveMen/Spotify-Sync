@@ -20,3 +20,19 @@ export async function authArtistMiddleware(req, res, next) {
         console.log(error);
     }
 }
+
+export async function authUserMiddleware(req, res, next) {
+    const { token } = req.cookies;
+
+    if (!token) {
+        return res.status(400).json({ message: "Token not provided" });
+    }
+
+    try {
+        const decoded = jwt.verify(token, config.JWT_SECRET);
+        req.user = decoded;
+        next();
+    } catch (error) {
+        console.log(error);
+    }
+}

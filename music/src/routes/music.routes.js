@@ -20,11 +20,42 @@ router.post(
     musicController.uploadMusic
 );
 
+/* GET /api/music */
+router.get("/", authMiddleware.authUserMiddleware, musicController.getMusics);
+
+/* GET /api/music/get-details/:id */
+router.get(
+    "/playlist/get-details/:id",
+    authMiddleware.authUserMiddleware,
+    musicController.getMusicById
+);
+
 /* GET /api/music/artist-musics */
 router.get(
     "/artist-musics",
     authMiddleware.authArtistMiddleware,
     musicController.getArtistMusics
+);
+
+/* POST /api/music/playlist */
+router.post(
+    "/playlist",
+    authMiddleware.authArtistMiddleware,
+    musicController.createPlaylist
+);
+
+/* GET /api/music/playlist */
+router.get(
+    "/playlist",
+    authMiddleware.authUserMiddleware,
+    musicController.getPlaylist
+);
+
+/* GET /api/music/playlist/:id */
+router.get(
+    "/playlist/:id",
+    authMiddleware.authUserMiddleware,
+    musicController.getPlaylistById
 );
 
 export default router;
