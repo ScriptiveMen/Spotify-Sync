@@ -161,7 +161,7 @@ export async function getUser(req, res) {
             id: req.user.id,
             email: req.user.email,
             fullName: req.user.fullName,
-            role: req.user.fullName,
+            role: req.user.role,
         },
     });
 }

@@ -6,6 +6,7 @@ import Home from "../pages/common/Home";
 import Track from "../pages/common/Track";
 import ProtectedRoutes from "../components/common/ProtectedRoutes";
 import PublicRoutes from "../components/common/PublicRoutes";
+import ArtistDashboard from "../pages/artist/ArtistDashboard";
 
 const MainRotues = () => {
     return (
@@ -39,6 +40,15 @@ const MainRotues = () => {
                 element={
                     <ProtectedRoutes>
                         <Track />
+                    </ProtectedRoutes>
+                }
+            />
+
+            <Route
+                path="/artist/dashboard"
+                element={
+                    <ProtectedRoutes>
+                        <ArtistDashboard />
                     </ProtectedRoutes>
                 }
             />

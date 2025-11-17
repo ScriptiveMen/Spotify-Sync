@@ -2,24 +2,12 @@
 
 @font-face {
     font-family: "spoty";
-    src: url("./font/StackSansNotch-VariableFont_wght.ttf") format("truetype");
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
-html,
-body,
-#root {
-    font-family: "spoty", sans-serif !important;
-}
-
-* {
-    font-family: inherit;
+    src: url("/StackSansNotch-VariableFont_wght.ttf");
 }
 
 body {
     background-color: #111;
+    font-family: "spoty", sans-serif !important;
 }
 
 /* For Webkit browsers (Chrome, Safari, Edge) */

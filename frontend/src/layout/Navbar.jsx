@@ -7,6 +7,7 @@ import {
     Search,
     Menu,
     X,
+    Component,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -32,6 +33,17 @@ const Navbar = () => {
             icon: Music2,
             isRandom: true,
         },
+        // Conditionally add artist link
+        ...(user?.role === "artist"
+            ? [
+                  {
+                      name: "Artist Mode",
+                      path: "/artist/dashboard",
+                      icon: Component,
+                      isArtist: true,
+                  },
+              ]
+            : []),
     ];
 
     useEffect(() => {
