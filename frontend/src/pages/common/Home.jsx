@@ -10,6 +10,7 @@ import {
     Edit2,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import musicClient from "../../utils/musicClient.axios.js";
 
 const Home = () => {
     const [isShowAllPlaylists, setIsShowAllPlaylists] = useState(false);
@@ -17,147 +18,101 @@ const Home = () => {
     const [itemsPerRow, setItemsPerRow] = useState(5);
     const [hoveredMusic, setHoveredMusic] = useState(null);
     const containerRef = useRef(null);
+    const [playlists, setplaylists] = useState([]);
+    const [musics, setMusics] = useState([]);
 
-    const playlists = [
-        {
-            id: 1,
-            title: "Bollywood Hits 2024",
-            tracks: 45,
-        },
-        {
-            id: 2,
-            title: "Romantic Melodies",
-            tracks: 32,
-        },
-        {
-            id: 3,
-            title: "Party Mix",
-            tracks: 28,
-        },
-        {
-            id: 4,
-            title: "Chill Vibes",
-            tracks: 38,
-        },
-        {
-            id: 5,
-            title: "Classical Collection",
-            tracks: 52,
-        },
-        {
-            id: 6,
-            title: "Workout Motivation",
-            tracks: 41,
-        },
-        {
-            id: 7,
-            title: "90s Nostalgia",
-            tracks: 36,
-        },
-        {
-            id: 8,
-            title: "Indie Favorites",
-            tracks: 29,
-        },
-        {
-            id: 9,
-            title: "Road Trip Essentials",
-            tracks: 44,
-        },
-    ];
-
-    const musics = [
-        {
-            _id: 0,
-            image: "/sample2.jpeg",
-            title: "Tum Hi Ho",
-            artist: "Arijit Singh",
-        },
-        {
-            _id: 1,
-            image: "/sample2.jpeg",
-            title: "Kesariya",
-            artist: "Arijit Singh",
-        },
-        {
-            _id: 2,
-            image: "/sample2.jpeg",
-            title: "Apna Bana Le",
-            artist: "Arijit Singh",
-        },
-        {
-            _id: 3,
-            image: "/sample2.jpeg",
-            title: "Chaleya",
-            artist: "Arijit Singh",
-        },
-        {
-            _id: 4,
-            image: "/sample2.jpeg",
-            title: "Pal Pal Dil Ke Paas",
-            artist: "Kishore Kumar",
-        },
-        {
-            _id: 5,
-            image: "/sample2.jpeg",
-            title: "Ve Kamleya",
-            artist: "Arijit Singh",
-        },
-        {
-            _id: 6,
-            image: "/sample2.jpeg",
-            title: "O Bedardeya",
-            artist: "Arijit Singh",
-        },
-        {
-            _id: 7,
-            image: "/sample2.jpeg",
-            title: "Satranga",
-            artist: "Arijit Singh",
-        },
-        {
-            _id: 8,
-            image: "/sample2.jpeg",
-            title: "Phir Aur Kya Chahiye",
-            artist: "Arijit Singh",
-        },
-        {
-            _id: 9,
-            image: "/sample2.jpeg",
-            title: "Raabta",
-            artist: "Arijit Singh",
-        },
-        {
-            _id: 10,
-            image: "/sample2.jpeg",
-            title: "Hawayein",
-            artist: "Arijit Singh",
-        },
-        {
-            _id: 11,
-            image: "/sample2.jpeg",
-            title: "Ae Dil Hai Mushkil",
-            artist: "Arijit Singh",
-        },
-        {
-            _id: 12,
-            image: "/sample2.jpeg",
-            title: "Kabira",
-            artist: "Tochi Raina",
-        },
-        {
-            _id: 13,
-            image: "/sample2.jpeg",
-            title: "Ilahi",
-            artist: "Arijit Singh",
-        },
-        {
-            _id: 14,
-            image: "/sample2.jpeg",
-            title: "Pehla Nasha",
-            artist: "Udit Narayan",
-        },
-    ];
+    // const musics = [
+    //     {
+    //         _id: 0,
+    //         image: "/sample2.jpeg",
+    //         title: "Tum Hi Ho",
+    //         artist: "Arijit Singh",
+    //     },
+    //     {
+    //         _id: 1,
+    //         image: "/sample2.jpeg",
+    //         title: "Kesariya",
+    //         artist: "Arijit Singh",
+    //     },
+    //     {
+    //         _id: 2,
+    //         image: "/sample2.jpeg",
+    //         title: "Apna Bana Le",
+    //         artist: "Arijit Singh",
+    //     },
+    //     {
+    //         _id: 3,
+    //         image: "/sample2.jpeg",
+    //         title: "Chaleya",
+    //         artist: "Arijit Singh",
+    //     },
+    //     {
+    //         _id: 4,
+    //         image: "/sample2.jpeg",
+    //         title: "Pal Pal Dil Ke Paas",
+    //         artist: "Kishore Kumar",
+    //     },
+    //     {
+    //         _id: 5,
+    //         image: "/sample2.jpeg",
+    //         title: "Ve Kamleya",
+    //         artist: "Arijit Singh",
+    //     },
+    //     {
+    //         _id: 6,
+    //         image: "/sample2.jpeg",
+    //         title: "O Bedardeya",
+    //         artist: "Arijit Singh",
+    //     },
+    //     {
+    //         _id: 7,
+    //         image: "/sample2.jpeg",
+    //         title: "Satranga",
+    //         artist: "Arijit Singh",
+    //     },
+    //     {
+    //         _id: 8,
+    //         image: "/sample2.jpeg",
+    //         title: "Phir Aur Kya Chahiye",
+    //         artist: "Arijit Singh",
+    //     },
+    //     {
+    //         _id: 9,
+    //         image: "/sample2.jpeg",
+    //         title: "Raabta",
+    //         artist: "Arijit Singh",
+    //     },
+    //     {
+    //         _id: 10,
+    //         image: "/sample2.jpeg",
+    //         title: "Hawayein",
+    //         artist: "Arijit Singh",
+    //     },
+    //     {
+    //         _id: 11,
+    //         image: "/sample2.jpeg",
+    //         title: "Ae Dil Hai Mushkil",
+    //         artist: "Arijit Singh",
+    //     },
+    //     {
+    //         _id: 12,
+    //         image: "/sample2.jpeg",
+    //         title: "Kabira",
+    //         artist: "Tochi Raina",
+    //     },
+    //     {
+    //         _id: 13,
+    //         image: "/sample2.jpeg",
+    //         title: "Ilahi",
+    //         artist: "Arijit Singh",
+    //     },
+    //     {
+    //         _id: 14,
+    //         image: "/sample2.jpeg",
+    //         title: "Pehla Nasha",
+    //         artist: "Udit Narayan",
+    //     },
+    // ];
 
     // Calculate items per row based on screen size
     useEffect(() => {
@@ -177,6 +132,25 @@ const Home = () => {
         calculateItemsPerRow();
         window.addEventListener("resize", calculateItemsPerRow);
         return () => window.removeEventListener("resize", calculateItemsPerRow);
+    }, []);
+
+    async function getPlaylist() {
+        const res = await musicClient.get("/api/music/playlist", {
+            withCredentials: true,
+        });
+        setplaylists(res.data.playlist);
+    }
+    async function getMusics() {
+        const res = await musicClient.get("/api/music", {
+            withCredentials: true,
+        });
+
+        setMusics(res.data.musics);
+    }
+
+    useEffect(() => {
+        getPlaylist();
+        getMusics();
     }, []);
 
     const displayedPlaylists = isShowAllPlaylists
@@ -238,7 +212,7 @@ const Home = () => {
                     >
                         {displayedPlaylists.map((playlist) => (
                             <div
-                                key={playlist.id}
+                                key={playlist._id}
                                 className="group relative bg-white/5 backdrop-blur-sm rounded-xl p-6 hover:bg-white/10 transition-all duration-200 cursor-pointer border border-white/10"
                             >
                                 {/* Playlist Info */}
@@ -246,7 +220,7 @@ const Home = () => {
                                     {playlist.title}
                                 </h3>
                                 <p className="text-sm text-gray-400 mb-5">
-                                    {playlist.tracks} tracks
+                                    {playlist.musics.length} tracks
                                 </p>
 
                                 {/* Action Buttons */}
@@ -305,7 +279,7 @@ const Home = () => {
                                     <div className="relative w-full aspect-square overflow-hidden rounded-lg mb-4 shadow-2xl">
                                         <img
                                             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                            src={music.image}
+                                            src={music.coverImageUrl}
                                             alt={music.title}
                                         />
                                         <div

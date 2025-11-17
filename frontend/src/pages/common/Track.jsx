@@ -12,7 +12,8 @@ import {
     MoreHorizontal,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import musicClient from "../../utils/musicClient.axios.js";
 
 const Track = () => {
     const audioRef = useRef(null);
@@ -34,16 +35,46 @@ const Track = () => {
         secondary: "#1f2937",
     });
     const [isVisible, setIsVisible] = useState(false);
+    const [musicData, setMusicData] = useState({});
 
-    // Dummy music data - Replace this object with your API data
-    const musicData = {
-        id: 1,
-        title: "Tum Hi Ho",
-        artist: "Arijit Singh",
-        album: "Aashiqui 2",
-        image: "/sahiba-banner.jpeg",
-        audioUrl: "/Sahiba(KoshalWorld.Com).mp3",
+    const params = useParams();
+
+    // Generate random vibrant gradient colors for variety
+    const generateGradient = () => {
+        const colors = [
+            { primary: "#6b21a8", secondary: "#1f2937" }, // Purple
+            { primary: "#1e40af", secondary: "#1f2937" }, // Blue
+            { primary: "#b91c1c", secondary: "#1f2937" }, // Red
+            { primary: "#059669", secondary: "#1f2937" }, // Green
+            { primary: "#d97706", secondary: "#1f2937" }, // Orange
+            { primary: "#7c2d12", secondary: "#1f2937" }, // Brown
+            { primary: "#0891b2", secondary: "#1f2937" }, // Cyan
+            { primary: "#c026d3", secondary: "#1f2937" }, // Magenta
+        ];
+        return colors[Math.floor(Math.random() * colors.length)];
     };
+
+    useEffect(() => {
+        const getMusic = async () => {
+            const res = await musicClient.get(
+                `/api/music/playlist/get-details/${params.id}`,
+                { withCredentials: true }
+            );
+
+            setMusicData({
+                id: res.data.music._id,
+                title: res.data.music.title,
+                artist: res.data.music.artist,
+                image: res.data.music.coverImageUrl,
+                audioUrl: res.data.music.musicUrl,
+            });
+
+            // Set a random vibrant gradient for each song
+            setGradientColors(generateGradient());
+        };
+
+        getMusic();
+    }, [params.id]);
 
     // Mount animation - slide up on mount
     useEffect(() => {
@@ -51,84 +82,6 @@ const Track = () => {
             setIsVisible(true);
         });
     }, []);
-
-    // Extract colors from image
-    useEffect(() => {
-        const extractColors = () => {
-            const img = imageRef.current;
-            if (!img) return;
-
-            const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
-
-            canvas.width = img.width;
-            canvas.height = img.height;
-
-            ctx.drawImage(img, 0, 0, img.width, img.height);
-
-            try {
-                const imageData = ctx.getImageData(
-                    0,
-                    0,
-                    canvas.width,
-                    canvas.height
-                );
-                const pixels = imageData.data;
-
-                const colorCounts = {};
-                const step = 10;
-
-                for (let i = 0; i < pixels.length; i += 4 * step) {
-                    const r = pixels[i];
-                    const g = pixels[i + 1];
-                    const b = pixels[i + 2];
-                    const a = pixels[i + 3];
-
-                    if (a < 128 || r + g + b < 50 || r + g + b > 700) continue;
-
-                    const roundedR = Math.round(r / 30) * 30;
-                    const roundedG = Math.round(g / 30) * 30;
-                    const roundedB = Math.round(b / 30) * 30;
-
-                    const colorKey = `${roundedR},${roundedG},${roundedB}`;
-                    colorCounts[colorKey] = (colorCounts[colorKey] || 0) + 1;
-                }
-
-                const sortedColors = Object.entries(colorCounts)
-                    .sort((a, b) => b[1] - a[1])
-                    .slice(0, 2);
-
-                if (sortedColors.length > 0) {
-                    const [r1, g1, b1] = sortedColors[0][0]
-                        .split(",")
-                        .map(Number);
-                    const primaryColor = `rgb(${r1}, ${g1}, ${b1})`;
-
-                    let secondaryColor = "#1f2937";
-                    if (sortedColors.length > 1) {
-                        const [r2, g2, b2] = sortedColors[1][0]
-                            .split(",")
-                            .map(Number);
-                        secondaryColor = `rgb(${Math.floor(
-                            r2 * 0.3
-                        )}, ${Math.floor(g2 * 0.3)}, ${Math.floor(b2 * 0.3)})`;
-                    }
-
-                    setGradientColors({
-                        primary: primaryColor,
-                        secondary: secondaryColor,
-                    });
-                }
-            } catch (error) {
-                console.log("Could not extract colors from image", error);
-            }
-        };
-
-        const img = imageRef.current;
-        if (img && img.complete) {
-            extractColors();
-        }
-    }, [musicData.image]);
 
     // Play/Pause toggle
     const togglePlayPause = () => {
@@ -224,7 +177,7 @@ const Track = () => {
                     <ChevronDown size={24} />
                 </button>
                 <h2 className="text-xs sm:text-sm text-gray-300 font-semibold">
-                    Playing from {musicData.album}
+                    Playing from {musicData.album || "Trending Songs"}
                 </h2>
                 <button className="p-1 hover:bg-white/10 rounded-full transition">
                     <MoreHorizontal size={24} />
@@ -241,94 +194,6 @@ const Track = () => {
                             src={musicData.image}
                             alt={musicData.title}
                             className="w-full h-full object-cover"
-                            crossOrigin="anonymous"
-                            onLoad={() => {
-                                const img = imageRef.current;
-                                if (!img) return;
-
-                                const canvas = document.createElement("canvas");
-                                const ctx = canvas.getContext("2d");
-                                canvas.width = img.width;
-                                canvas.height = img.height;
-                                ctx.drawImage(img, 0, 0, img.width, img.height);
-
-                                try {
-                                    const imageData = ctx.getImageData(
-                                        0,
-                                        0,
-                                        canvas.width,
-                                        canvas.height
-                                    );
-                                    const pixels = imageData.data;
-                                    const colorCounts = {};
-                                    const step = 10;
-
-                                    for (
-                                        let i = 0;
-                                        i < pixels.length;
-                                        i += 4 * step
-                                    ) {
-                                        const r = pixels[i];
-                                        const g = pixels[i + 1];
-                                        const b = pixels[i + 2];
-                                        const a = pixels[i + 3];
-
-                                        if (
-                                            a < 128 ||
-                                            r + g + b < 50 ||
-                                            r + g + b > 700
-                                        )
-                                            continue;
-
-                                        const roundedR =
-                                            Math.round(r / 30) * 30;
-                                        const roundedG =
-                                            Math.round(g / 30) * 30;
-                                        const roundedB =
-                                            Math.round(b / 30) * 30;
-
-                                        const colorKey = `${roundedR},${roundedG},${roundedB}`;
-                                        colorCounts[colorKey] =
-                                            (colorCounts[colorKey] || 0) + 1;
-                                    }
-
-                                    const sortedColors = Object.entries(
-                                        colorCounts
-                                    )
-                                        .sort((a, b) => b[1] - a[1])
-                                        .slice(0, 2);
-
-                                    if (sortedColors.length > 0) {
-                                        const [r1, g1, b1] = sortedColors[0][0]
-                                            .split(",")
-                                            .map(Number);
-                                        const primaryColor = `rgb(${r1}, ${g1}, ${b1})`;
-
-                                        let secondaryColor = "#1f2937";
-                                        if (sortedColors.length > 1) {
-                                            const [r2, g2, b2] =
-                                                sortedColors[1][0]
-                                                    .split(",")
-                                                    .map(Number);
-                                            secondaryColor = `rgb(${Math.floor(
-                                                r2 * 0.3
-                                            )}, ${Math.floor(
-                                                g2 * 0.3
-                                            )}, ${Math.floor(b2 * 0.3)})`;
-                                        }
-
-                                        setGradientColors({
-                                            primary: primaryColor,
-                                            secondary: secondaryColor,
-                                        });
-                                    }
-                                } catch (error) {
-                                    console.log(
-                                        "Could not extract colors",
-                                        error
-                                    );
-                                }
-                            }}
                         />
                     </div>
 
