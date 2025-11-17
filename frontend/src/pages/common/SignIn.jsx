@@ -1,7 +1,7 @@
 import { Podcast } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import axios from "../../utils/axios.js";
+import authClient from "../../utils/authClient.axios.js";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../store/slices/userSlice.jsx";
 
@@ -18,7 +18,7 @@ const SignIn = () => {
 
     const submitHandler = async (data) => {
         try {
-            const res = await axios.post("/api/auth/login", data, {
+            const res = await authClient.post("/api/auth/login", data, {
                 withCredentials: true,
             });
             navigate("/");

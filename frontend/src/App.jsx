@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import MainRotues from "./routes/MainRotues";
-import axios from "./utils/axios.js";
+import authClient from "./utils/authClient.axios.js";
 import { useDispatch } from "react-redux";
 import { setUser } from "./store/slices/userSlice";
 
@@ -9,7 +9,7 @@ const App = () => {
     useEffect(() => {
         async function getUser() {
             try {
-                const res = await axios.get("/api/auth/me", {
+                const res = await authClient.get("/api/auth/me", {
                     withCredentials: true,
                 });
                 dispatch(setUser(res.data.user));

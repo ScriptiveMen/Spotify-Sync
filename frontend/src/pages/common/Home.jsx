@@ -1,61 +1,68 @@
 import React, { useState, useEffect, useRef } from "react";
 import Navbar from "../../layout/Navbar";
-import { ChevronDown, ChevronUp, ListMusic, Music, Play } from "lucide-react";
+import {
+    ChevronDown,
+    ChevronUp,
+    ListMusic,
+    Music,
+    Play,
+    Eye,
+    Edit2,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Home = () => {
     const [isShowAllPlaylists, setIsShowAllPlaylists] = useState(false);
     const [isShowAllMusics, setIsShowAllMusics] = useState(false);
     const [itemsPerRow, setItemsPerRow] = useState(5);
-    const [hoveredPlaylist, setHoveredPlaylist] = useState(null);
     const [hoveredMusic, setHoveredMusic] = useState(null);
     const containerRef = useRef(null);
 
     const playlists = [
         {
-            image: "/sample.jpeg",
+            id: 1,
             title: "Bollywood Hits 2024",
-            artist: "Various Artists",
+            tracks: 45,
         },
         {
-            image: "/sample.jpeg",
+            id: 2,
             title: "Romantic Melodies",
-            artist: "Various Artists",
+            tracks: 32,
         },
         {
-            image: "/sample.jpeg",
+            id: 3,
             title: "Party Mix",
-            artist: "Various Artists",
+            tracks: 28,
         },
         {
-            image: "/sample.jpeg",
+            id: 4,
             title: "Chill Vibes",
-            artist: "Various Artists",
+            tracks: 38,
         },
         {
-            image: "/sample.jpeg",
+            id: 5,
             title: "Classical Collection",
-            artist: "Various Artists",
+            tracks: 52,
         },
         {
-            image: "/sample.jpeg",
+            id: 6,
             title: "Workout Motivation",
-            artist: "Various Artists",
+            tracks: 41,
         },
         {
-            image: "/sample.jpeg",
+            id: 7,
             title: "90s Nostalgia",
-            artist: "Various Artists",
+            tracks: 36,
         },
         {
-            image: "/sample.jpeg",
+            id: 8,
             title: "Indie Favorites",
-            artist: "Various Artists",
+            tracks: 29,
         },
         {
-            image: "/sample.jpeg",
+            id: 9,
             title: "Road Trip Essentials",
-            artist: "Various Artists",
+            tracks: 44,
         },
     ];
 
@@ -185,7 +192,6 @@ const Home = () => {
     return (
         <div className="min-h-screen w-full bg-linear-to-b from-gray-900 via-black to-black">
             <Navbar />
-
             <div className="w-full min-h-screen px-4 md:px-8 lg:px-12 pt-24">
                 {/* Hero Section */}
                 <div className="mb-12">
@@ -195,6 +201,68 @@ const Home = () => {
                     <p className="text-gray-400 text-lg">
                         What do you want to listen to today?
                     </p>
+                </div>
+
+                {/* Playlists Section */}
+                <div className="pb-10">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="flex items-center gap-3 text-xl sm:text-2xl md:text-3xl font-bold">
+                            <div className="p-1.5 sm:p-2 bg-linear-to-br from-purple-500 to-pink-500 rounded-lg">
+                                <ListMusic className="w-5 h-5 md:w-6 md:h-6" />
+                            </div>
+                            <span>Trending Playlists</span>
+                        </h2>
+                        {hasMorePlaylists && (
+                            <button
+                                onClick={() =>
+                                    setIsShowAllPlaylists(!isShowAllPlaylists)
+                                }
+                                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-all duration-300 text-xs sm:text-sm font-medium"
+                            >
+                                <span>
+                                    {isShowAllPlaylists
+                                        ? "Show less"
+                                        : "Show all"}
+                                </span>
+                                {isShowAllPlaylists ? (
+                                    <ChevronUp size={16} />
+                                ) : (
+                                    <ChevronDown size={16} />
+                                )}
+                            </button>
+                        )}
+                    </div>
+                    <div
+                        ref={containerRef}
+                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6"
+                    >
+                        {displayedPlaylists.map((playlist) => (
+                            <div
+                                key={playlist.id}
+                                className="group relative bg-white/5 backdrop-blur-sm rounded-xl p-6 hover:bg-white/10 transition-all duration-200 cursor-pointer border border-white/10"
+                            >
+                                {/* Playlist Info */}
+                                <h3 className="font-semibold text-xl mb-2 truncate">
+                                    {playlist.title}
+                                </h3>
+                                <p className="text-sm text-gray-400 mb-5">
+                                    {playlist.tracks} tracks
+                                </p>
+
+                                {/* Action Buttons */}
+                                <div className="flex gap-2">
+                                    <button className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-all text-sm font-medium">
+                                        <Eye size={16} />
+                                        <span>View</span>
+                                    </button>
+                                    <button className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-all text-sm font-medium">
+                                        <Play size={16} />
+                                        <span>Play</span>
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
                 {/* Musics Section */}
@@ -211,7 +279,7 @@ const Home = () => {
                                 onClick={() =>
                                     setIsShowAllMusics(!isShowAllMusics)
                                 }
-                                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-all duration-300 text-xs sm:text-sm  font-medium"
+                                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-all duration-300 text-xs sm:text-sm font-medium"
                             >
                                 <span>
                                     {isShowAllMusics ? "Show less" : "Show all"}
@@ -224,7 +292,6 @@ const Home = () => {
                             </button>
                         )}
                     </div>
-
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
                         {displayedMusics.map((music, idx) => (
                             <Link
@@ -263,80 +330,6 @@ const Home = () => {
                                     </div>
                                 </div>
                             </Link>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Playlists Section */}
-                <div className="pb-10">
-                    <div className="flex items-center justify-between mb-6">
-                        <h2 className="flex items-center gap-3 text-xl sm:text-2xl md:text-3xl font-bold">
-                            <div className="p-1.5 sm:p-2 bg-linear-to-br from-purple-500 to-pink-500 rounded-lg">
-                                <ListMusic className="w-5 h-5 md:w-6 md:h-6" />
-                            </div>
-                            <span>Trending Playlists</span>
-                        </h2>
-                        {hasMorePlaylists && (
-                            <button
-                                onClick={() =>
-                                    setIsShowAllPlaylists(!isShowAllPlaylists)
-                                }
-                                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-all duration-300 text-xs sm:text-sm font-medium"
-                            >
-                                <span>
-                                    {isShowAllPlaylists
-                                        ? "Show less"
-                                        : "Show all"}
-                                </span>
-                                {isShowAllPlaylists ? (
-                                    <ChevronUp size={16} />
-                                ) : (
-                                    <ChevronDown size={16} />
-                                )}
-                            </button>
-                        )}
-                    </div>
-
-                    <div
-                        ref={containerRef}
-                        className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6"
-                    >
-                        {displayedPlaylists.map((playlist, idx) => (
-                            <div
-                                key={idx}
-                                className="group cursor-pointer"
-                                onMouseEnter={() => setHoveredPlaylist(idx)}
-                                onMouseLeave={() => setHoveredPlaylist(null)}
-                            >
-                                <div className="relative bg-white/5 backdrop-blur-sm rounded-xl p-2 sm:p-4 transition-all duration-300 hover:bg-white/10 hover:scale-105">
-                                    <div className="relative w-full aspect-square overflow-hidden rounded-lg mb-4 shadow-2xl">
-                                        <img
-                                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                            src={playlist.image}
-                                            alt={playlist.title}
-                                        />
-                                        <div
-                                            className={`absolute inset-0 bg-black/40 flex items-center justify-center transition-opacity duration-300 ${
-                                                hoveredPlaylist === idx
-                                                    ? "opacity-100"
-                                                    : "opacity-0"
-                                            }`}
-                                        >
-                                            <div className="bg-purple-500 hover:bg-purple-600 rounded-full p-3 shadow-lg transform transition-transform hover:scale-110">
-                                                <Play size={24} fill="white" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h3 className="font-semibold text-sm md:text-base line-clamp-2 mb-1">
-                                            {playlist.title}
-                                        </h3>
-                                        <p className="text-xs md:text-sm text-gray-400 truncate">
-                                            {playlist.artist}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
                         ))}
                     </div>
                 </div>

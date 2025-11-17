@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Music,
     ListMusic,
@@ -13,94 +13,23 @@ import {
     MoreVertical,
     X,
 } from "lucide-react";
+import musicClient from "../../utils/musicClient.axios.js";
 
 const ArtistDashboard = () => {
-    const [activeTab, setActiveTab] = useState("overview");
+    const [activeTab, setActiveTab] = useState("tracks");
     const [showAddModal, setShowAddModal] = useState(false);
     const [modalType, setModalType] = useState(""); // 'music' or 'playlist'
     const [hoveredItem, setHoveredItem] = useState(null);
+    const [myTracks, setMyTracks] = useState([]);
+    const [myPlaylists, setMyPlaylists] = useState([]);
 
     // Sample data - replace with real data from your backend
     const stats = {
-        totalTracks: 24,
+        totalTracks: `${myTracks.length}`,
         totalPlaylists: 8,
         totalListeners: 12500,
         monthlyPlays: 45600,
     };
-
-    const myTracks = [
-        {
-            _id: 1,
-            title: "Midnight Dreams",
-            plays: 12500,
-            image: "/sample2.jpeg",
-            duration: "3:45",
-            status: "published",
-        },
-        {
-            _id: 2,
-            title: "Summer Vibes",
-            plays: 8900,
-            image: "/sample2.jpeg",
-            duration: "4:20",
-            status: "published",
-        },
-        {
-            _id: 3,
-            title: "Urban Nights",
-            plays: 15600,
-            image: "/sample2.jpeg",
-            duration: "3:12",
-            status: "published",
-        },
-        {
-            _id: 4,
-            title: "Acoustic Soul",
-            plays: 6700,
-            image: "/sample2.jpeg",
-            duration: "5:00",
-            status: "draft",
-        },
-        {
-            _id: 5,
-            title: "Electric Pulse",
-            plays: 9200,
-            image: "/sample2.jpeg",
-            duration: "3:58",
-            status: "published",
-        },
-    ];
-
-    const myPlaylists = [
-        {
-            _id: 1,
-            title: "Best of 2024",
-            tracks: 15,
-            image: "/sample.jpeg",
-            visibility: "public",
-        },
-        {
-            _id: 2,
-            title: "Chill Sessions",
-            tracks: 22,
-            image: "/sample.jpeg",
-            visibility: "public",
-        },
-        {
-            _id: 3,
-            title: "Workout Mix",
-            tracks: 18,
-            image: "/sample.jpeg",
-            visibility: "private",
-        },
-        {
-            _id: 4,
-            title: "Late Night Vibes",
-            tracks: 12,
-            image: "/sample.jpeg",
-            visibility: "public",
-        },
-    ];
 
     const StatCard = ({ icon: Icon, label, value, gradient }) => (
         <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 hover:bg-white/10 transition-all duration-300">
@@ -212,8 +141,8 @@ const ArtistDashboard = () => {
                             }}
                             className={`flex-1 px-4 py-3 rounded-lg ${
                                 modalType === "music"
-                                    ? "bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
-                                    : "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                                    ? "bg-linear-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+                                    : "bg-linear-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
                             } transition-all font-medium`}
                         >
                             Create
@@ -224,8 +153,29 @@ const ArtistDashboard = () => {
         </div>
     );
 
+    async function getArtistTracks() {
+        const res = await musicClient.get("/api/music/artist-musics", {
+            withCredentials: true,
+        });
+
+        setMyTracks(res.data.musics);
+    }
+
+    async function getArtistPlaylists() {
+        const res = await musicClient.get("/api/music/playlist", {
+            withCredentials: true,
+        });
+
+        setMyPlaylists(res.data.playlist);
+    }
+
+    useEffect(() => {
+        getArtistTracks();
+        getArtistPlaylists();
+    }, []);
+
     return (
-        <div className="min-h-screen w-full bg-gradient-to-b from-gray-900 via-black to-black">
+        <div className="min-h-screen w-full bg-linear-to-b from-gray-900 via-black to-black">
             <div className="w-full min-h-screen px-4 md:px-8 lg:px-12 pt-8">
                 {/* Header */}
                 <div className="mb-8">
@@ -243,40 +193,30 @@ const ArtistDashboard = () => {
                         icon={Music}
                         label="Total Tracks"
                         value={stats.totalTracks}
-                        gradient="bg-gradient-to-br from-blue-500 to-cyan-500"
+                        gradient="bg-linear-to-br from-blue-500 to-cyan-500"
                     />
                     <StatCard
                         icon={ListMusic}
                         label="Total Playlists"
-                        value={stats.totalPlaylists}
-                        gradient="bg-gradient-to-br from-purple-500 to-pink-500"
+                        value={myPlaylists.length}
+                        gradient="bg-linear-to-br from-purple-500 to-pink-500"
                     />
                     <StatCard
                         icon={Users}
                         label="Listeners"
                         value={stats.totalListeners}
-                        gradient="bg-gradient-to-br from-green-500 to-emerald-500"
+                        gradient="bg-linear-to-br from-green-500 to-emerald-500"
                     />
                     <StatCard
                         icon={BarChart3}
                         label="Monthly Plays"
                         value={stats.monthlyPlays}
-                        gradient="bg-gradient-to-br from-orange-500 to-red-500"
+                        gradient="bg-linear-to-br from-orange-500 to-red-500"
                     />
                 </div>
 
                 {/* Tabs */}
                 <div className="flex gap-4 mb-8 border-b border-white/10 overflow-x-auto">
-                    <button
-                        onClick={() => setActiveTab("overview")}
-                        className={`px-6 py-3 font-medium transition-all whitespace-nowrap ${
-                            activeTab === "overview"
-                                ? "text-blue-400 border-b-2 border-blue-400"
-                                : "text-gray-400 hover:text-white"
-                        }`}
-                    >
-                        Overview
-                    </button>
                     <button
                         onClick={() => setActiveTab("tracks")}
                         className={`px-6 py-3 font-medium transition-all whitespace-nowrap ${
@@ -304,7 +244,7 @@ const ArtistDashboard = () => {
                     <div className="mb-10">
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="flex items-center gap-3 text-2xl md:text-3xl font-bold">
-                                <div className="p-2 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg">
+                                <div className="p-2 bg-linear-to-br from-blue-500 to-cyan-500 rounded-lg">
                                     <Music className="w-6 h-6" />
                                 </div>
                                 <span>My Tracks</span>
@@ -314,7 +254,7 @@ const ArtistDashboard = () => {
                                     setModalType("music");
                                     setShowAddModal(true);
                                 }}
-                                className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 transition-all font-medium"
+                                className="flex items-center gap-2 px-4 py-2 rounded-full bg-linear-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 transition-all font-medium"
                             >
                                 <Plus size={20} />
                                 <span className="hidden sm:inline">
@@ -324,7 +264,7 @@ const ArtistDashboard = () => {
                         </div>
 
                         <div className="bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden">
-                            {myTracks.map((track, idx) => (
+                            {myTracks.map((track) => (
                                 <div
                                     key={track._id}
                                     className="flex items-center gap-4 p-4 hover:bg-white/5 transition-all border-b border-white/5 last:border-0"
@@ -335,7 +275,7 @@ const ArtistDashboard = () => {
                                 >
                                     <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
                                         <img
-                                            src={track.image}
+                                            src={track.coverImageUrl}
                                             alt={track.title}
                                             className="w-full h-full object-cover"
                                         />
@@ -351,19 +291,17 @@ const ArtistDashboard = () => {
                                             {track.title}
                                         </h3>
                                         <p className="text-sm text-gray-400">
-                                            {track.plays.toLocaleString()} plays
-                                            • {track.duration}
+                                            {(
+                                                track.plays || 1000
+                                            ).toLocaleString()}{" "}
+                                            plays • {track.duration || "3:45"}
                                         </p>
                                     </div>
 
                                     <span
-                                        className={`hidden sm:inline px-3 py-1 rounded-full text-xs font-medium ${
-                                            track.status === "published"
-                                                ? "bg-green-500/20 text-green-400"
-                                                : "bg-yellow-500/20 text-yellow-400"
-                                        }`}
+                                        className={`hidden bg-green-500/20 text-green-400 sm:inline px-3 py-1 rounded-full text-xs font-medium`}
                                     >
-                                        {track.status}
+                                        Published
                                     </span>
 
                                     <div className="flex items-center gap-2">
@@ -391,7 +329,7 @@ const ArtistDashboard = () => {
                     <div className="mb-10">
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="flex items-center gap-3 text-2xl md:text-3xl font-bold">
-                                <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg">
+                                <div className="p-2 bg-linear-to-br from-purple-500 to-pink-500 rounded-lg">
                                     <ListMusic className="w-6 h-6" />
                                 </div>
                                 <span>My Playlists</span>
@@ -401,7 +339,7 @@ const ArtistDashboard = () => {
                                     setModalType("playlist");
                                     setShowAddModal(true);
                                 }}
-                                className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition-all font-medium"
+                                className="flex items-center gap-2 px-4 py-2 rounded-full bg-linear-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition-all font-medium"
                             >
                                 <Plus size={20} />
                                 <span className="hidden sm:inline">
@@ -414,115 +352,37 @@ const ArtistDashboard = () => {
                             {myPlaylists.map((playlist) => (
                                 <div
                                     key={playlist._id}
-                                    className="group bg-white/5 backdrop-blur-sm rounded-xl p-4 hover:bg-white/10 transition-all cursor-pointer"
+                                    className="group relative bg-white/5 backdrop-blur-sm rounded-xl p-6 hover:bg-white/10 transition-all duration-200 cursor-pointer border border-white/10"
                                 >
-                                    <div className="relative w-full aspect-square overflow-hidden rounded-lg mb-4">
-                                        <img
-                                            src={playlist.image}
-                                            alt={playlist.title}
-                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                        />
-                                        <div className="absolute top-2 right-2">
-                                            <span
-                                                className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                                    playlist.visibility ===
-                                                    "public"
-                                                        ? "bg-green-500/80 text-white"
-                                                        : "bg-gray-500/80 text-white"
-                                                }`}
-                                            >
-                                                {playlist.visibility}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <h3 className="font-semibold text-lg mb-1 truncate">
+                                    {/* Playlist Info */}
+                                    <h3 className="font-semibold text-xl mb-2 truncate">
                                         {playlist.title}
                                     </h3>
-                                    <p className="text-sm text-gray-400 mb-3">
-                                        {playlist.tracks} tracks
+                                    <p className="text-sm text-gray-400 mb-5">
+                                        {playlist.musics?.length || 0} tracks
                                     </p>
 
+                                    {/* Action Buttons */}
                                     <div className="flex gap-2">
-                                        <button className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-all text-sm">
+                                        <button className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-all text-sm font-medium">
                                             <Eye size={16} />
                                             <span>View</span>
                                         </button>
-                                        <button className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-all text-sm">
+                                        <button className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-all text-sm font-medium">
                                             <Edit2 size={16} />
                                             <span>Edit</span>
                                         </button>
                                     </div>
+
+                                    {/* Delete Button - Top Right */}
+                                    <button className="absolute top-4 right-4 p-2 rounded-lg bg-white/5 hover:bg-red-500/20 transition-all opacity-0 group-hover:opacity-100">
+                                        <Trash2
+                                            size={16}
+                                            className="text-red-400"
+                                        />
+                                    </button>
                                 </div>
                             ))}
-                        </div>
-                    </div>
-                )}
-
-                {/* Overview Tab */}
-                {activeTab === "overview" && (
-                    <div className="space-y-8 mb-10">
-                        {/* Recent Tracks */}
-                        <div>
-                            <h2 className="text-2xl font-bold mb-4">
-                                Recent Tracks
-                            </h2>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {myTracks.slice(0, 3).map((track) => (
-                                    <div
-                                        key={track._id}
-                                        className="bg-white/5 rounded-xl p-4 hover:bg-white/10 transition-all"
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <img
-                                                src={track.image}
-                                                alt={track.title}
-                                                className="w-16 h-16 rounded-lg object-cover"
-                                            />
-                                            <div className="flex-1 min-w-0">
-                                                <h3 className="font-semibold truncate">
-                                                    {track.title}
-                                                </h3>
-                                                <p className="text-sm text-gray-400">
-                                                    {track.plays.toLocaleString()}{" "}
-                                                    plays
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Recent Playlists */}
-                        <div>
-                            <h2 className="text-2xl font-bold mb-4">
-                                Recent Playlists
-                            </h2>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {myPlaylists.slice(0, 3).map((playlist) => (
-                                    <div
-                                        key={playlist._id}
-                                        className="bg-white/5 rounded-xl p-4 hover:bg-white/10 transition-all"
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <img
-                                                src={playlist.image}
-                                                alt={playlist.title}
-                                                className="w-16 h-16 rounded-lg object-cover"
-                                            />
-                                            <div className="flex-1 min-w-0">
-                                                <h3 className="font-semibold truncate">
-                                                    {playlist.title}
-                                                </h3>
-                                                <p className="text-sm text-gray-400">
-                                                    {playlist.tracks} tracks
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
                         </div>
                     </div>
                 )}

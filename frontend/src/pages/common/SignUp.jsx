@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Podcast, User, Mic } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import axios from "../../utils/axios.js";
+import authClient from "../../utils/authClient.axios.js";
 
 const SignUp = () => {
     const [accountType, setAccountType] = useState("user");
@@ -25,7 +25,7 @@ const SignUp = () => {
             role: accountType,
         };
 
-        await axios.post("/api/auth/register", formattedData, {
+        await authClient.post("/api/auth/register", formattedData, {
             withCredentials: true,
         });
         reset();
