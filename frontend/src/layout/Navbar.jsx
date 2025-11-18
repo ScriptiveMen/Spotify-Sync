@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import {
-    CircleUserRound,
     House,
     Music2,
     Podcast,
@@ -8,28 +7,42 @@ import {
     Menu,
     X,
     Component,
+    LogOut,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "../store/slices/userSlice";
+import authClient from "../utils/authClient.axios.js";
+import musicClient from "../utils/musicClient.axios.js";
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
+    const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
     const lastScrollY = useRef(0);
     const navigate = useNavigate();
-
     const { user } = useSelector((state) => state.user);
+    const dispatch = useDispatch();
 
     // Random music ID generator (you'll replace this with real IDs later)
-    const getRandomMusicId = () => {
-        return Math.floor(Math.random() * 15); // Assuming you have 15 songs (0-14)
+    const getRandomMusicId = async () => {
+        const res = await musicClient.get("/api/music", {
+            withCredentials: true,
+        });
+
+        const musics = res.data.musics;
+
+        if (!musics || musics.length === 0) return null; // handle empty array
+
+        const randomIndex = Math.floor(Math.random() * musics.length);
+        return musics[randomIndex]._id; // return the random _id
     };
 
     const navLinks = [
         { name: "Home", path: "/", icon: House },
         {
             name: "Random Picks",
-            path: `/track/${getRandomMusicId()}`,
+            path: "/track/random", // temporary path, will navigate in handleMusicClick
             icon: Music2,
             isRandom: true,
         },
@@ -70,18 +83,28 @@ const Navbar = () => {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    const handleMusicClick = (e, link) => {
+    const handleMusicClick = async (e, link) => {
         if (link.isRandom) {
             e.preventDefault();
-            navigate(`/track/${getRandomMusicId()}`);
+            const randomId = await getRandomMusicId(); // wait for async ID
+            navigate(`/track/${randomId}`);
             setIsMenuOpen(false);
         }
+    };
+
+    const handleLogout = async () => {
+        await authClient.get("/api/auth/logout", { withCredentials: true });
+        dispatch(setUser(null));
+        console.log("Logging out...");
+        setShowLogoutConfirm(false);
+        setIsMenuOpen(false);
+        navigate("/signin");
     };
 
     return (
         <>
             <nav
-                className={`fixed  top-0 left-0 right-0 z-50 transition-all duration-300 ${
+                className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
                     isVisible ? "translate-y-0" : "-translate-y-full"
                 }`}
             >
@@ -93,7 +116,7 @@ const Navbar = () => {
                             <div className="flex w-full items-center justify-start gap-8">
                                 {/* Logo Section */}
                                 <div className="flex items-center gap-3 cursor-pointer">
-                                    <Podcast className="text-white sm:text-[#20D760] w-6 h-6 md:w-7 md:h-7 " />
+                                    <Podcast className="text-white sm:text-[#20D760] w-6 h-6 md:w-7 md:h-7" />
                                     <span className="text-xl whitespace-nowrap md:text-2xl font-bold text-white hidden sm:block">
                                         Spotify-Sync
                                     </span>
@@ -126,7 +149,7 @@ const Navbar = () => {
                             </div>
 
                             {/* Right section */}
-                            <div className="flex w-full items-center justify-end gap-8">
+                            <div className="flex w-full items-center justify-end gap-4">
                                 {/* Search Bar - Desktop */}
                                 <div className="hidden lg:flex items-center flex-1 max-w-md mx-8">
                                     <div className="relative w-full">
@@ -150,15 +173,19 @@ const Navbar = () => {
                                             className="text-[#b3b3b3]"
                                         />
                                     </button>
-                                    <div className="flex items-center gap-2 px-3 py-1.5 bg-[#000000] hover:bg-[#282828] rounded-full transition-all cursor-pointer">
-                                        <CircleUserRound
-                                            size={24}
-                                            className="text-white"
-                                        />
-                                        <p className="font-semibold capitalize text-white text-sm">
-                                            {user.fullName.firstName}
-                                        </p>
-                                    </div>
+
+                                    {/* Desktop Logout Button */}
+                                    <button
+                                        onClick={() =>
+                                            setShowLogoutConfirm(true)
+                                        }
+                                        className="flex items-center gap-2 px-4 py-2 bg-red-600/10 hover:bg-red-600/20 text-red-500 rounded-full transition-all"
+                                    >
+                                        <LogOut size={18} />
+                                        <span className="font-medium text-sm">
+                                            Logout
+                                        </span>
+                                    </button>
                                 </div>
                             </div>
 
@@ -181,7 +208,7 @@ const Navbar = () => {
                 <div
                     className={`md:hidden bg-black border-t border-[#282828] overflow-hidden transition-all duration-300 ${
                         isMenuOpen
-                            ? "max-h-96 opacity-100"
+                            ? "max-h-[32rem] opacity-100"
                             : "max-h-0 opacity-0"
                     }`}
                 >
@@ -211,7 +238,7 @@ const Navbar = () => {
                                 className={({ isActive }) =>
                                     `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                                         isActive && !link.isRandom
-                                            ? "bg-[#282828] text-white"
+                                            ? "md:bg-[#282828] text-white"
                                             : "text-[#b3b3b3] hover:text-white hover:bg-[#282828]"
                                     }`
                                 }
@@ -221,16 +248,45 @@ const Navbar = () => {
                             </NavLink>
                         ))}
 
-                        {/* Mobile User Section */}
-                        <div className="flex items-center gap-3 px-4 py-3 bg-[#181818] rounded-lg mt-4">
-                            <CircleUserRound size={24} className="text-white" />
-                            <p className="font-semibold text-white">
-                                Test User
-                            </p>
-                        </div>
+                        {/* Mobile Logout Button */}
+                        <button
+                            onClick={() => setShowLogoutConfirm(true)}
+                            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-600/10 hover:bg-red-600/20 text-red-500 rounded-lg transition-all"
+                        >
+                            <LogOut size={22} />
+                            <span className="font-medium">Logout</span>
+                        </button>
                     </div>
                 </div>
             </nav>
+
+            {/* Logout Confirmation Modal */}
+            {showLogoutConfirm && (
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+                    <div className="bg-[#282828] rounded-2xl p-6 max-w-sm w-full shadow-2xl animate-in fade-in zoom-in duration-200">
+                        <h3 className="text-xl font-bold text-white mb-2">
+                            Confirm Logout
+                        </h3>
+                        <p className="text-[#b3b3b3] mb-6">
+                            Are you sure you want to logout?
+                        </p>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setShowLogoutConfirm(false)}
+                                className="flex-1 px-4 py-2.5 bg-[#181818] hover:bg-[#242424] text-white rounded-full transition-all font-medium"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleLogout}
+                                className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-full transition-all font-medium"
+                            >
+                                Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 };

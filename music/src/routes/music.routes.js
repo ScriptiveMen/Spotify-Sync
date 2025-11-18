@@ -44,11 +44,18 @@ router.post(
     musicController.createPlaylist
 );
 
-/* GET /api/music/playlist */
+/* GET /api/music/playlist (for artist) */
 router.get(
     "/playlist",
     authMiddleware.authUserMiddleware,
     musicController.getPlaylist
+);
+
+/* GET /api/music/playlists (for all users) */
+router.get(
+    "/playlists",
+    authMiddleware.authUserMiddleware,
+    musicController.getAllPlaylists
 );
 
 /* GET /api/music/playlist/:id */

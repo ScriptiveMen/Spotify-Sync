@@ -105,11 +105,21 @@ export async function createPlaylist(req, res) {
 export async function getPlaylist(req, res) {
     try {
         const playlist = await playlistModel.find({ artistId: req.user.id });
-
         res.status(200).json({ playlist });
     } catch (err) {
         console.log(err);
         return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export async function getAllPlaylists(req, res) {
+    const { skip = 0, limit = 10 } = req.query;
+    try {
+        const playlists = await playlistModel.find().skip(skip).limit(limit);
+        res.status(200).json({ playlists });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal server error" });
     }
 }
 

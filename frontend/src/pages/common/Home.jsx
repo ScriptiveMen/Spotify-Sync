@@ -11,8 +11,10 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import musicClient from "../../utils/musicClient.axios.js";
+import { useSelector } from "react-redux";
 
 const Home = () => {
+    const { user } = useSelector((state) => state.user);
     const [isShowAllPlaylists, setIsShowAllPlaylists] = useState(false);
     const [isShowAllMusics, setIsShowAllMusics] = useState(false);
     const [itemsPerRow, setItemsPerRow] = useState(5);
@@ -20,99 +22,6 @@ const Home = () => {
     const containerRef = useRef(null);
     const [playlists, setplaylists] = useState([]);
     const [musics, setMusics] = useState([]);
-
-    // const musics = [
-    //     {
-    //         _id: 0,
-    //         image: "/sample2.jpeg",
-    //         title: "Tum Hi Ho",
-    //         artist: "Arijit Singh",
-    //     },
-    //     {
-    //         _id: 1,
-    //         image: "/sample2.jpeg",
-    //         title: "Kesariya",
-    //         artist: "Arijit Singh",
-    //     },
-    //     {
-    //         _id: 2,
-    //         image: "/sample2.jpeg",
-    //         title: "Apna Bana Le",
-    //         artist: "Arijit Singh",
-    //     },
-    //     {
-    //         _id: 3,
-    //         image: "/sample2.jpeg",
-    //         title: "Chaleya",
-    //         artist: "Arijit Singh",
-    //     },
-    //     {
-    //         _id: 4,
-    //         image: "/sample2.jpeg",
-    //         title: "Pal Pal Dil Ke Paas",
-    //         artist: "Kishore Kumar",
-    //     },
-    //     {
-    //         _id: 5,
-    //         image: "/sample2.jpeg",
-    //         title: "Ve Kamleya",
-    //         artist: "Arijit Singh",
-    //     },
-    //     {
-    //         _id: 6,
-    //         image: "/sample2.jpeg",
-    //         title: "O Bedardeya",
-    //         artist: "Arijit Singh",
-    //     },
-    //     {
-    //         _id: 7,
-    //         image: "/sample2.jpeg",
-    //         title: "Satranga",
-    //         artist: "Arijit Singh",
-    //     },
-    //     {
-    //         _id: 8,
-    //         image: "/sample2.jpeg",
-    //         title: "Phir Aur Kya Chahiye",
-    //         artist: "Arijit Singh",
-    //     },
-    //     {
-    //         _id: 9,
-    //         image: "/sample2.jpeg",
-    //         title: "Raabta",
-    //         artist: "Arijit Singh",
-    //     },
-    //     {
-    //         _id: 10,
-    //         image: "/sample2.jpeg",
-    //         title: "Hawayein",
-    //         artist: "Arijit Singh",
-    //     },
-    //     {
-    //         _id: 11,
-    //         image: "/sample2.jpeg",
-    //         title: "Ae Dil Hai Mushkil",
-    //         artist: "Arijit Singh",
-    //     },
-    //     {
-    //         _id: 12,
-    //         image: "/sample2.jpeg",
-    //         title: "Kabira",
-    //         artist: "Tochi Raina",
-    //     },
-    //     {
-    //         _id: 13,
-    //         image: "/sample2.jpeg",
-    //         title: "Ilahi",
-    //         artist: "Arijit Singh",
-    //     },
-    //     {
-    //         _id: 14,
-    //         image: "/sample2.jpeg",
-    //         title: "Pehla Nasha",
-    //         artist: "Udit Narayan",
-    //     },
-    // ];
 
     // Calculate items per row based on screen size
     useEffect(() => {
@@ -135,10 +44,10 @@ const Home = () => {
     }, []);
 
     async function getPlaylist() {
-        const res = await musicClient.get("/api/music/playlist", {
+        const res = await musicClient.get("/api/music/playlists", {
             withCredentials: true,
         });
-        setplaylists(res.data.playlist);
+        setplaylists(res.data.playlists);
     }
     async function getMusics() {
         const res = await musicClient.get("/api/music", {
@@ -172,8 +81,10 @@ const Home = () => {
                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-3 text-[#20D760]">
                         Welcome Back
                     </h1>
-                    <p className="text-gray-400 text-lg">
-                        What do you want to listen to today?
+                    <p className="text-gray-300 text-2xl font-semibold mb-2">
+                        {user?.fullName.firstName +
+                            " " +
+                            user?.fullName.lastName}
                     </p>
                 </div>
 
