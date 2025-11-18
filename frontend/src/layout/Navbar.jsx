@@ -32,7 +32,7 @@ const Navbar = () => {
 
         const musics = res.data.musics;
 
-        if (!musics || musics.length === 0) return null; // handle empty array
+        if (!musics || musics.length === 0) return null;
 
         const randomIndex = Math.floor(Math.random() * musics.length);
         return musics[randomIndex]._id; // return the random _id
@@ -42,11 +42,10 @@ const Navbar = () => {
         { name: "Home", path: "/", icon: House },
         {
             name: "Random Picks",
-            path: "/track/random", // temporary path, will navigate in handleMusicClick
+            path: "/track/random",
             icon: Music2,
             isRandom: true,
         },
-        // Conditionally add artist link
         ...(user?.role === "artist"
             ? [
                   {
@@ -123,7 +122,7 @@ const Navbar = () => {
                                 </div>
 
                                 {/* Desktop Navigation */}
-                                <div className="hidden md:flex items-center gap-4">
+                                <div className="hidden  md:flex items-center gap-4">
                                     {navLinks.map((link) => (
                                         <NavLink
                                             key={link.path}
@@ -132,14 +131,14 @@ const Navbar = () => {
                                                 handleMusicClick(e, link)
                                             }
                                             className={({ isActive }) =>
-                                                `flex items-center gap-2 px-4 whitespace-nowrap py-2 rounded-full transition-all duration-200 ${
+                                                `flex items-center gap-2 px-4 text-sm whitespace-nowrap py-2 rounded-full transition-all duration-200 ${
                                                     isActive && !link.isRandom
-                                                        ? "bg-[#282828] text-white"
-                                                        : "text-[#b3b3b3] hover:text-white"
+                                                        ? " text-white"
+                                                        : "text-[#898989] hover:text-white "
                                                 }`
                                             }
                                         >
-                                            <link.icon size={20} />
+                                            <link.icon size={19} />
                                             <span className="font-medium">
                                                 {link.name}
                                             </span>
@@ -208,7 +207,7 @@ const Navbar = () => {
                 <div
                     className={`md:hidden bg-black border-t border-[#282828] overflow-hidden transition-all duration-300 ${
                         isMenuOpen
-                            ? "max-h-[32rem] opacity-100"
+                            ? "max-h-128 opacity-100"
                             : "max-h-0 opacity-0"
                     }`}
                 >
@@ -262,7 +261,7 @@ const Navbar = () => {
 
             {/* Logout Confirmation Modal */}
             {showLogoutConfirm && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-60 flex items-center justify-center p-4">
                     <div className="bg-[#282828] rounded-2xl p-6 max-w-sm w-full shadow-2xl animate-in fade-in zoom-in duration-200">
                         <h3 className="text-xl font-bold text-white mb-2">
                             Confirm Logout
