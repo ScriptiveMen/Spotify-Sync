@@ -9,6 +9,8 @@ import {
     Eye,
     Edit2,
     ServerCrash,
+    Inbox,
+    InboxIcon,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import musicClient from "../../utils/musicClient.axios.js";
@@ -121,8 +123,8 @@ const Home = ({ socket }) => {
                     </div>
                     {displayedPlaylists.length === 0 ? (
                         <ErrorMsg
-                            icon={ServerCrash}
-                            title="Failed to fetch playlists."
+                            icon={Inbox}
+                            title="No playlists available right now."
                         />
                     ) : (
                         <div
@@ -188,8 +190,8 @@ const Home = ({ socket }) => {
                     </div>
                     {displayedMusics.length == 0 ? (
                         <ErrorMsg
-                            icon={ServerCrash}
-                            title={"Failed to fetch musics."}
+                            icon={Inbox}
+                            title={"No musics available right now."}
                         />
                     ) : (
                         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
