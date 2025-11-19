@@ -8,10 +8,12 @@ import {
     Play,
     Eye,
     Edit2,
+    ServerCrash,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import musicClient from "../../utils/musicClient.axios.js";
 import { useSelector } from "react-redux";
+import ErrorMsg from "../../components/common/ErrorMsg.jsx";
 
 const Home = ({ socket }) => {
     const { user } = useSelector((state) => state.user);
@@ -117,41 +119,48 @@ const Home = ({ socket }) => {
                             </button>
                         )}
                     </div>
-                    <div
-                        ref={containerRef}
-                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6"
-                    >
-                        {displayedPlaylists.map((playlist) => (
-                            <div
-                                key={playlist._id}
-                                className="group relative bg-white/5 backdrop-blur-sm rounded-xl p-6 hover:bg-white/10 transition-all duration-200 cursor-pointer border border-white/10"
-                            >
-                                {/* Playlist Info */}
-                                <h3 className="font-semibold text-xl mb-2 truncate">
-                                    {playlist.title}
-                                </h3>
-                                <p className="text-sm text-gray-400 mb-5">
-                                    {playlist.musics.length} tracks
-                                </p>
+                    {displayedPlaylists.length === 0 ? (
+                        <ErrorMsg
+                            icon={ServerCrash}
+                            title="Failed to fetch playlists."
+                        />
+                    ) : (
+                        <div
+                            ref={containerRef}
+                            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6"
+                        >
+                            {displayedPlaylists.map((playlist) => (
+                                <div
+                                    key={playlist._id}
+                                    className="group relative bg-white/5 backdrop-blur-sm rounded-xl p-6 hover:bg-white/10 transition-all duration-200 cursor-pointer border border-white/10"
+                                >
+                                    {/* Playlist Info */}
+                                    <h3 className="font-semibold text-xl mb-2 truncate">
+                                        {playlist.title}
+                                    </h3>
+                                    <p className="text-sm text-gray-400 mb-5">
+                                        {playlist.musics.length} tracks
+                                    </p>
 
-                                {/* Action Buttons */}
-                                <div className="flex gap-2">
-                                    <button className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-all text-sm font-medium">
-                                        <Eye size={16} />
-                                        <span>View</span>
-                                    </button>
-                                    <button className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-all text-sm font-medium">
-                                        <Play size={16} />
-                                        <span>Play</span>
-                                    </button>
+                                    {/* Action Buttons */}
+                                    <div className="flex gap-2">
+                                        <button className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-all text-sm font-medium">
+                                            <Eye size={16} />
+                                            <span>View</span>
+                                        </button>
+                                        <button className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-all text-sm font-medium">
+                                            <Play size={16} />
+                                            <span>Play</span>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 {/* Musics Section */}
-                <div className="mb-10">
+                <div className="pb-5">
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="flex items-center gap-3 text-xl sm:text-2xl md:text-3xl font-bold">
                             <div className="p-1.5 sm:p-2 bg-linear-to-br from-blue-500 to-cyan-500 rounded-lg">
@@ -177,53 +186,63 @@ const Home = ({ socket }) => {
                             </button>
                         )}
                     </div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
-                        {displayedMusics.map((music, idx) => (
-                            <Link
-                                to={`/track/${music._id}`}
-                                onClick={() => {
-                                    socket?.emit("play", {
-                                        musicId: music._id,
-                                    });
+                    {displayedMusics.length == 0 ? (
+                        <ErrorMsg
+                            icon={ServerCrash}
+                            title={"Failed to fetch musics."}
+                        />
+                    ) : (
+                        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+                            {displayedMusics.map((music, idx) => (
+                                <Link
+                                    to={`/track/${music._id}`}
+                                    onClick={() => {
+                                        socket?.emit("play", {
+                                            musicId: music._id,
+                                        });
 
-                                    console.log("sent musicId", music._id);
-                                }}
-                                key={idx}
-                                className="group"
-                                onMouseEnter={() => setHoveredMusic(idx)}
-                                onMouseLeave={() => setHoveredMusic(null)}
-                            >
-                                <div className="relative bg-white/5 backdrop-blur-sm rounded-xl p-2 sm:p-4 transition-all duration-300 hover:bg-white/10 hover:scale-105">
-                                    <div className="relative w-full aspect-square overflow-hidden rounded-lg mb-4 shadow-2xl">
-                                        <img
-                                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                            src={music.coverImageUrl}
-                                            alt={music.title}
-                                        />
-                                        <div
-                                            className={`absolute inset-0 bg-black/40 flex items-center justify-center transition-opacity duration-300 ${
-                                                hoveredMusic === idx
-                                                    ? "opacity-100"
-                                                    : "opacity-0"
-                                            }`}
-                                        >
-                                            <div className="bg-blue-500 hover:bg-blue-600 rounded-full p-3 shadow-lg transform transition-transform hover:scale-110">
-                                                <Play size={24} fill="white" />
+                                        console.log("sent musicId", music._id);
+                                    }}
+                                    key={idx}
+                                    className="group"
+                                    onMouseEnter={() => setHoveredMusic(idx)}
+                                    onMouseLeave={() => setHoveredMusic(null)}
+                                >
+                                    <div className="relative bg-white/5 backdrop-blur-sm rounded-xl p-2 sm:p-4 transition-all duration-300 hover:bg-white/10 hover:scale-105">
+                                        <div className="relative w-full aspect-square overflow-hidden rounded-lg mb-4 shadow-2xl">
+                                            <img
+                                                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                                src={music.coverImageUrl}
+                                                alt={music.title}
+                                            />
+                                            <div
+                                                className={`absolute inset-0 bg-black/40 flex items-center justify-center transition-opacity duration-300 ${
+                                                    hoveredMusic === idx
+                                                        ? "opacity-100"
+                                                        : "opacity-0"
+                                                }`}
+                                            >
+                                                <div className="bg-blue-500 hover:bg-blue-600 rounded-full p-3 shadow-lg transform transition-transform hover:scale-110">
+                                                    <Play
+                                                        size={24}
+                                                        fill="white"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
+                                        <div>
+                                            <h3 className="font-semibold text-sm md:text-base line-clamp-2 mb-1">
+                                                {music.title}
+                                            </h3>
+                                            <p className="text-xs md:text-sm text-gray-400 truncate">
+                                                {music.artist}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h3 className="font-semibold text-sm md:text-base line-clamp-2 mb-1">
-                                            {music.title}
-                                        </h3>
-                                        <p className="text-xs md:text-sm text-gray-400 truncate">
-                                            {music.artist}
-                                        </p>
-                                    </div>
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
