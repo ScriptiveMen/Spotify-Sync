@@ -19,8 +19,8 @@ const Track = () => {
     const audioRef = useRef(null);
     const imageRef = useRef(null);
     const navigate = useNavigate();
+    const isUnmountingRef = useRef(false);
 
-    // States
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
@@ -34,12 +34,11 @@ const Track = () => {
         primary: "#6b21a8",
         secondary: "#1f2937",
     });
-    const [isVisible, setIsVisible] = useState(false);
     const [musicData, setMusicData] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
 
     const params = useParams();
 
-    // Generate random vibrant gradient colors for variety
     const generateGradient = () => {
         const colors = [
             { primary: "#6b21a8", secondary: "#1f2937" }, // Purple
@@ -54,60 +53,137 @@ const Track = () => {
         return colors[Math.floor(Math.random() * colors.length)];
     };
 
+    // Fetch music data
     useEffect(() => {
         const getMusic = async () => {
-            const res = await musicClient.get(
-                `/api/music/playlist/get-details/${params.id}`,
-                { withCredentials: true }
-            );
+            try {
+                const res = await musicClient.get(
+                    `/api/music/playlist/get-details/${params.id}`,
+                    { withCredentials: true }
+                );
 
-            setMusicData({
-                id: res.data.music._id,
-                title: res.data.music.title,
-                artist: res.data.music.artist,
-                image: res.data.music.coverImageUrl,
-                audioUrl: res.data.music.musicUrl,
-            });
+                setMusicData({
+                    id: res.data.music._id,
+                    title: res.data.music.title,
+                    artist: res.data.music.artist,
+                    image: res.data.music.coverImageUrl,
+                    audioUrl: res.data.music.musicUrl,
+                });
 
-            // Set a random vibrant gradient for each song
-            setGradientColors(generateGradient());
+                setGradientColors(generateGradient());
+                setIsLoading(false);
+            } catch (error) {
+                console.error("Error fetching music:", error);
+                setIsLoading(false);
+            }
         };
 
         getMusic();
     }, [params.id]);
 
-    // Mount animation - slide up on mount
+    // audio element
     useEffect(() => {
-        requestAnimationFrame(() => {
-            setIsVisible(true);
-        });
+        const audio = audioRef.current;
+        if (!audio || !musicData.audioUrl) return;
+
+        // Set initial volume
+        audio.volume = volume / 100;
+        audio.playbackRate = playbackSpeed;
+
+        const handleCanPlay = () => {
+            if (!isUnmountingRef.current) {
+                audio
+                    .play()
+                    .then(() => {
+                        setIsPlaying(true);
+                    })
+                    .catch((err) => {
+                        console.log("Autoplay blocked:", err);
+                        setIsPlaying(false);
+                    });
+            }
+        };
+
+        const handlePlay = () => {
+            if (!isUnmountingRef.current) {
+                setIsPlaying(true);
+            }
+        };
+
+        const handlePause = () => {
+            if (!isUnmountingRef.current) {
+                setIsPlaying(false);
+            }
+        };
+
+        const handleEnded = () => {
+            if (!isUnmountingRef.current) {
+                if (isRepeat) {
+                    audio.currentTime = 0;
+                    audio
+                        .play()
+                        .catch((err) => console.log("Replay failed:", err));
+                } else {
+                    setIsPlaying(false);
+                }
+            }
+        };
+
+        audio.addEventListener("canplay", handleCanPlay);
+        audio.addEventListener("play", handlePlay);
+        audio.addEventListener("pause", handlePause);
+        audio.addEventListener("ended", handleEnded);
+
+        return () => {
+            audio.removeEventListener("canplay", handleCanPlay);
+            audio.removeEventListener("play", handlePlay);
+            audio.removeEventListener("pause", handlePause);
+            audio.removeEventListener("ended", handleEnded);
+        };
+    }, [musicData.audioUrl, volume, playbackSpeed, isRepeat]);
+
+    useEffect(() => {
+        return () => {
+            isUnmountingRef.current = true;
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.src = "";
+            }
+        };
     }, []);
 
-    // Play/Pause toggle
     const togglePlayPause = () => {
-        if (isPlaying) {
-            audioRef.current?.pause();
+        const audio = audioRef.current;
+        if (!audio) return;
+
+        if (audio.paused) {
+            audio
+                .play()
+                .then(() => setIsPlaying(true))
+                .catch((err) => {
+                    console.log("Play failed:", err);
+                    setIsPlaying(false);
+                });
         } else {
-            audioRef.current?.play();
+            audio.pause();
+            setIsPlaying(false);
         }
-        setIsPlaying(!isPlaying);
     };
 
-    // Handle time update
+    // time update
     const handleTimeUpdate = () => {
-        if (audioRef.current) {
+        if (audioRef.current && !isUnmountingRef.current) {
             setCurrentTime(audioRef.current.currentTime);
         }
     };
 
     // Handle loaded metadata
     const handleLoadedMetadata = () => {
-        if (audioRef.current) {
+        if (audioRef.current && !isUnmountingRef.current) {
             setDuration(audioRef.current.duration);
         }
     };
 
-    // Seek to position
     const handleSeek = (e) => {
         const seekTime = (e.target.value / 100) * duration;
         if (audioRef.current) {
@@ -116,7 +192,6 @@ const Track = () => {
         }
     };
 
-    // Volume control
     const handleVolumeChange = (e) => {
         const newVolume = e.target.value;
         setVolume(newVolume);
@@ -126,7 +201,6 @@ const Track = () => {
         if (newVolume > 0) setIsMuted(false);
     };
 
-    // Toggle mute
     const toggleMute = () => {
         if (audioRef.current) {
             if (isMuted) {
@@ -139,7 +213,6 @@ const Track = () => {
         }
     };
 
-    // Change playback speed
     const changeSpeed = () => {
         const speeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
         const currentIndex = speeds.indexOf(playbackSpeed);
@@ -151,7 +224,6 @@ const Track = () => {
         }
     };
 
-    // Format time
     const formatTime = (time) => {
         if (isNaN(time)) return "0:00";
         const minutes = Math.floor(time / 60);
@@ -159,11 +231,25 @@ const Track = () => {
         return `${minutes}:${seconds.toString().padStart(2, "0")}`;
     };
 
+    const handleBack = () => {
+        isUnmountingRef.current = true;
+        if (audioRef.current) {
+            audioRef.current.pause();
+        }
+        navigate("/");
+    };
+
+    if (isLoading) {
+        return (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900">
+                <div className="text-white text-xl">Loading...</div>
+            </div>
+        );
+    }
+
     return (
         <div
-            className={`fixed inset-0 z-50 transition-transform duration-200 ease-out flex flex-col text-white ${
-                isVisible ? "translate-y-0" : "translate-y-full"
-            }`}
+            className="fixed inset-0 z-50 flex flex-col text-white"
             style={{
                 background: `linear-gradient(to bottom, ${gradientColors.primary}, ${gradientColors.secondary}, #000000)`,
             }}
@@ -171,7 +257,7 @@ const Track = () => {
             {/* Header */}
             <div className="flex items-center justify-between p-4 sm:p-6 shrink-0">
                 <button
-                    onClick={() => navigate("/")}
+                    onClick={handleBack}
                     className="p-1 hover:bg-white/10 rounded-full transition"
                 >
                     <ChevronDown size={24} />
@@ -364,41 +450,7 @@ const Track = () => {
                 src={musicData.audioUrl}
                 onTimeUpdate={handleTimeUpdate}
                 onLoadedMetadata={handleLoadedMetadata}
-                onEnded={() => setIsPlaying(false)}
             />
-
-            {/* Slider Styles */}
-            <style>{`
-                .slider::-webkit-slider-thumb {
-                    appearance: none;
-                    width: 12px;
-                    height: 12px;
-                    border-radius: 50%;
-                    background: white;
-                    cursor: pointer;
-                    transition: all 0.2s;
-                }
-
-                .slider:hover::-webkit-slider-thumb {
-                    width: 14px;
-                    height: 14px;
-                }
-
-                .slider::-moz-range-thumb {
-                    width: 12px;
-                    height: 12px;
-                    border-radius: 50%;
-                    background: white;
-                    cursor: pointer;
-                    border: none;
-                    transition: all 0.2s;
-                }
-
-                .slider:hover::-moz-range-thumb {
-                    width: 14px;
-                    height: 14px;
-                }
-            `}</style>
         </div>
     );
 };

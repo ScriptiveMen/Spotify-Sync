@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import musicClient from "../../utils/musicClient.axios.js";
 import { useSelector } from "react-redux";
 
-const Home = () => {
+const Home = ({ socket }) => {
     const { user } = useSelector((state) => state.user);
     const [isShowAllPlaylists, setIsShowAllPlaylists] = useState(false);
     const [isShowAllMusics, setIsShowAllMusics] = useState(false);
@@ -181,6 +181,13 @@ const Home = () => {
                         {displayedMusics.map((music, idx) => (
                             <Link
                                 to={`/track/${music._id}`}
+                                onClick={() => {
+                                    socket?.emit("play", {
+                                        musicId: music._id,
+                                    });
+
+                                    console.log("sent musicId", music._id);
+                                }}
                                 key={idx}
                                 className="group"
                                 onMouseEnter={() => setHoveredMusic(idx)}

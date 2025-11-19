@@ -4,10 +4,14 @@ import config from "../config/config.js";
 let channel, connection;
 
 export async function connect() {
-    connection = await amqp.connect(config.RABBITMQ_URI);
-    channel = await connection.createChannel();
+    try {
+        connection = await amqp.connect(config.RABBITMQ_URI);
+        channel = await connection.createChannel();
 
-    console.log("Connected to RabbitMQ");
+        console.log("Connected to RabbitMQ");
+    } catch (error) {
+        console.log("Error connecting to RabbitMQ");
+    }
 }
 
 export async function publishToQueue(queueName, data) {
