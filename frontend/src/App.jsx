@@ -11,6 +11,7 @@ import ProtectedRoutes from "./components/common/ProtectedRoutes";
 import PublicRoutes from "./components/common/PublicRoutes";
 import ArtistDashboard from "./pages/artist/ArtistDashboard";
 import { io } from "socket.io-client";
+import Playlists from "./pages/common/Playlists.jsx";
 
 const App = () => {
     const dispatch = useDispatch();
@@ -82,6 +83,14 @@ const App = () => {
                     element={
                         <ProtectedRoutes>
                             <Track />
+                        </ProtectedRoutes>
+                    }
+                />
+                <Route
+                    path="/playlists/:id"
+                    element={
+                        <ProtectedRoutes>
+                            <Playlists />
                         </ProtectedRoutes>
                     }
                 />

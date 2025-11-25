@@ -7,12 +7,9 @@ import {
     Music,
     Play,
     Eye,
-    Edit2,
-    ServerCrash,
     Inbox,
-    InboxIcon,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import musicClient from "../../utils/musicClient.axios.js";
 import { useSelector } from "react-redux";
 import ErrorMsg from "../../components/common/ErrorMsg.jsx";
@@ -26,6 +23,7 @@ const Home = ({ socket }) => {
     const containerRef = useRef(null);
     const [playlists, setplaylists] = useState([]);
     const [musics, setMusics] = useState([]);
+    const navigate = useNavigate();
 
     // Calculate items per row based on screen size
     useEffect(() => {
@@ -134,7 +132,7 @@ const Home = ({ socket }) => {
                             {displayedPlaylists.map((playlist) => (
                                 <div
                                     key={playlist._id}
-                                    className="group relative bg-white/5 backdrop-blur-sm rounded-xl p-6 hover:bg-white/10 transition-all duration-200 cursor-pointer border border-white/10"
+                                    className="group relative bg-white/5 backdrop-blur-sm rounded-xl p-6  border border-white/10"
                                 >
                                     {/* Playlist Info */}
                                     <h3 className="font-semibold text-xl mb-2 truncate">
@@ -145,14 +143,17 @@ const Home = ({ socket }) => {
                                     </p>
 
                                     {/* Action Buttons */}
-                                    <div className="flex gap-2">
-                                        <button className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-all text-sm font-medium">
+                                    <div
+                                        onClick={() => {
+                                            navigate(
+                                                `/playlists/${playlist._id}`
+                                            );
+                                        }}
+                                        className="flex gap-2"
+                                    >
+                                        <button className="flex-1 cursor-pointer flex items-center justify-center gap-2 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-all text-sm font-medium">
                                             <Eye size={16} />
                                             <span>View</span>
-                                        </button>
-                                        <button className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-all text-sm font-medium">
-                                            <Play size={16} />
-                                            <span>Play</span>
                                         </button>
                                     </div>
                                 </div>
@@ -202,8 +203,7 @@ const Home = ({ socket }) => {
                                         socket?.emit("play", {
                                             musicId: music._id,
                                         });
-
-                                        console.log("sent musicId", music._id);
+                                        socket = { socket };
                                     }}
                                     key={idx}
                                     className="group"

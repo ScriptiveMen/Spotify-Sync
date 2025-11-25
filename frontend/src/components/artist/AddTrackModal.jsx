@@ -75,7 +75,6 @@ const AddTrackModal = ({ isOpen, onClose, onSuccess }) => {
         setIsSubmitting(true);
 
         try {
-            // Create FormData object for Multer - SAME AS POSTMAN
             const formData = new FormData();
             formData.append("title", data.title);
             formData.append("music", audioFile);
