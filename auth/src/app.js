@@ -6,6 +6,7 @@ import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import config from "./config/config.js";
 import cors from "cors";
+import Limiter from "./middlewares/rateLimiter.js";
 
 const app = express();
 app.use(
@@ -36,6 +37,10 @@ passport.use(
         }
     )
 );
+
+app.use("/api/auth/login", Limiter);
+app.use("/api/auth/register", Limiter);
+app.use("/api/auth/google", Limiter);
 
 app.use("/api/auth", userRoutes);
 

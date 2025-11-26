@@ -3,6 +3,7 @@ import morgan from "morgan";
 import musicRoutes from "./routes/music.routes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import Limiter from "./middlewares/rateLimiter.js";
 
 const app = express();
 app.use(
@@ -15,6 +16,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
+
+app.use("/api/music/upload", Limiter);
 
 app.use("/api/music", musicRoutes);
 
