@@ -114,6 +114,9 @@ To run this project, you will need to add the following environment variables to
 
 <img width="1705" height="958" alt="Screenshot 2025-11-26 at 12 17 41 PM" src="https://github.com/user-attachments/assets/b8878479-ed50-4b98-8448-2af55c79ad39" />
 
+<img width="1710" height="1112" alt="Screenshot 2025-11-26 at 10 28 57 AM" src="https://github.com/user-attachments/assets/f15098a9-1a11-444a-86dd-b3f3db9f1318" />
+
+
 <img width="1710" height="958" alt="Screenshot 2025-11-26 at 2 04 21 PM" src="https://github.com/user-attachments/assets/d5cb869c-8ac4-41d8-9779-4ee830fdce26" />
 
 
