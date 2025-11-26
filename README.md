@@ -110,8 +110,13 @@ To run this project, you will need to add the following environment variables to
 💡 All services must be running simultaneously for full functionality.
 
 ## Screenshots
+<img width="1710" height="958" alt="Screenshot 2025-11-26 at 2 04 29 PM" src="https://github.com/user-attachments/assets/e1a8c8ec-df1b-4e96-a10a-ad592659da30" />
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+<img width="1705" height="958" alt="Screenshot 2025-11-26 at 12 17 41 PM" src="https://github.com/user-attachments/assets/b8878479-ed50-4b98-8448-2af55c79ad39" />
+
+<img width="1710" height="958" alt="Screenshot 2025-11-26 at 2 04 21 PM" src="https://github.com/user-attachments/assets/d5cb869c-8ac4-41d8-9779-4ee830fdce26" />
+
+
 
 ## ✨ Final Note
 
