@@ -18,7 +18,7 @@ const s3 = new S3Client({
 export async function uploadFile(file) {
     const key = `${uuidv4()}-${file.originalname}`;
     const command = new PutObjectCommand({
-        Bucket: "spotify-sync",
+        Bucket: config.AWS_BUCKET,
         Body: file.buffer,
         Key: key,
     });
@@ -30,7 +30,7 @@ export async function uploadFile(file) {
 
 export async function getPresignedUrl(key) {
     const command = new GetObjectCommand({
-        Bucket: "spotify-sync",
+        Bucket: config.AWS_BUCKET,
         Key: key,
     });
 

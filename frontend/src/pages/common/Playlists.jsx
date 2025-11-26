@@ -22,7 +22,7 @@ const Playlists = ({ socket }) => {
         }
 
         getPlaylistMusics();
-    }, []);
+    }, [id]);
 
     return (
         <div className="min-h-screen w-full bg-linear-to-b from-gray-900 via-black to-black">
